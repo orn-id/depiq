@@ -212,9 +212,9 @@ func (id *InsertDataset) SetError(err error) *InsertDataset {
 
 // Generates the default INSERT statement. If Prepared has been called with true then the statement will not be
 // interpolated. See examples. When using structs you may specify a column to be skipped in the insert, (e.g. id) by
-// specifying a goqu tag with `skipinsert`
+// specifying a depiq tag with `skipinsert`
 //    type Item struct{
-//       Id   uint32 `db:"id" goqu:"skipinsert"`
+//       Id   uint32 `db:"id" depiq:"skipinsert"`
 //       Name string `db:"name"`
 //    }
 //

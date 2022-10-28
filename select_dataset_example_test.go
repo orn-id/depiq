@@ -30,12 +30,12 @@ const schema = `
 		); 
     `
 
-const defaultDBURI = "postgres://postgres:@localhost:5435/goqupostgres?sslmode=disable"
+const defaultDBURI = "postgres://postgres:@localhost:5435/depiqpostgres?sslmode=disable"
 
-var goquDB *depiq.Database
+var depiqDB *depiq.Database
 
 func getDB() *depiq.Database {
-	if goquDB == nil {
+	if depiqDB == nil {
 		dbURI := os.Getenv("PG_URI")
 		if dbURI == "" {
 			dbURI = defaultDBURI
@@ -48,35 +48,35 @@ func getDB() *depiq.Database {
 		if err != nil {
 			panic(err)
 		}
-		goquDB = depiq.New("postgres", pdb)
+		depiqDB = depiq.New("postgres", pdb)
 	}
 	// reset the db
-	if _, err := goquDB.Exec(schema); err != nil {
+	if _, err := depiqDB.Exec(schema); err != nil {
 		panic(err)
 	}
-	type goquUser struct {
-		ID        int64     `db:"id" goqu:"skipinsert"`
+	type depiqUser struct {
+		ID        int64     `db:"id" depiq:"skipinsert"`
 		FirstName string    `db:"first_name"`
 		LastName  string    `db:"last_name"`
-		Created   time.Time `db:"created" goqu:"skipupdate"`
+		Created   time.Time `db:"created" depiq:"skipupdate"`
 	}
 
-	users := []goquUser{
+	users := []depiqUser{
 		{FirstName: "Bob", LastName: "Yukon"},
 		{FirstName: "Sally", LastName: "Yukon"},
 		{FirstName: "Vinita", LastName: "Yukon"},
 		{FirstName: "John", LastName: "Doe"},
 	}
 	var userIds []int64
-	err := goquDB.Insert("depiq_user").Rows(users).Returning("id").Executor().ScanVals(&userIds)
+	err := depiqDB.Insert("depiq_user").Rows(users).Returning("id").Executor().ScanVals(&userIds)
 	if err != nil {
 		panic(err)
 	}
 	type userRole struct {
-		ID      int64     `db:"id" goqu:"skipinsert"`
+		ID      int64     `db:"id" depiq:"skipinsert"`
 		UserID  int64     `db:"user_id"`
 		Name    string    `db:"name"`
-		Created time.Time `db:"created" goqu:"skipupdate"`
+		Created time.Time `db:"created" depiq:"skipupdate"`
 	}
 
 	roles := []userRole{
@@ -85,11 +85,11 @@ func getDB() *depiq.Database {
 		{UserID: userIds[2], Name: "Manager"},
 		{UserID: userIds[3], Name: "User"},
 	}
-	_, err = goquDB.Insert("user_role").Rows(roles).Executor().Exec()
+	_, err = depiqDB.Insert("user_role").Rows(roles).Executor().Exec()
 	if err != nil {
 		panic(err)
 	}
-	return goquDB
+	return depiqDB
 }
 
 func ExampleSelectDataset() {
@@ -1185,7 +1185,7 @@ func ExampleSelectDataset_Update() {
 
 func ExampleSelectDataset_Insert() {
 	type item struct {
-		ID      uint32 `db:"id" goqu:"skipinsert"`
+		ID      uint32 `db:"id" depiq:"skipinsert"`
 		Address string `db:"address"`
 		Name    string `db:"name"`
 	}

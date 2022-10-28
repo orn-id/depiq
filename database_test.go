@@ -54,9 +54,9 @@ func (ds *databaseSuite) TestLogger() {
 	ds.NoError(err)
 	db.Trace("TEST", "")
 	ds.Equal([]string{
-		"[goqu] QUERY [query:=`SELECT * FROM \"items\"`]",
-		"[goqu] EXEC [query:=`SELECT * FROM \"items\" WHERE \"id\" = ?` args:=[1]]",
-		"[goqu] TEST",
+		"[depiq] QUERY [query:=`SELECT * FROM \"items\"`]",
+		"[depiq] EXEC [query:=`SELECT * FROM \"items\" WHERE \"id\" = ?` args:=[1]]",
+		"[depiq] TEST",
 	}, logger.Messages)
 }
 
@@ -91,11 +91,11 @@ func (ds *databaseSuite) TestScanStructs() {
 
 	items = items[0:0]
 	ds.EqualError(db.ScanStructs(items, `SELECT * FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	ds.EqualError(db.ScanStructs(&testActionItem{}, `SELECT * FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	ds.EqualError(db.ScanStructs(&items, `SELECT "test" FROM "items"`),
-		`goqu: unable to find corresponding field to column "test" returned by query`)
+		`depiq: unable to find corresponding field to column "test" returned by query`)
 }
 
 func (ds *databaseSuite) TestScanStruct() {
@@ -118,11 +118,11 @@ func (ds *databaseSuite) TestScanStruct() {
 	ds.Equal("Test1", item.Name)
 
 	_, err = db.ScanStruct(item, `SELECT * FROM "items" LIMIT 1`)
-	ds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	ds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.ScanStruct([]testActionItem{}, `SELECT * FROM "items" LIMIT 1`)
-	ds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	ds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.ScanStruct(&item, `SELECT "test" FROM "items" LIMIT 1`)
-	ds.EqualError(err, `goqu: unable to find corresponding field to column "test" returned by query`)
+	ds.EqualError(err, `depiq: unable to find corresponding field to column "test" returned by query`)
 }
 
 func (ds *databaseSuite) TestScanVals() {
@@ -144,9 +144,9 @@ func (ds *databaseSuite) TestScanVals() {
 	ds.Len(ids, 5)
 
 	ds.EqualError(db.ScanVals([]uint32{}, `SELECT "id" FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 	ds.EqualError(db.ScanVals(testActionItem{}, `SELECT "id" FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 }
 
 func (ds *databaseSuite) TestScanVal() {
@@ -165,10 +165,10 @@ func (ds *databaseSuite) TestScanVal() {
 
 	found, err = db.ScanVal([]int64{}, `SELECT "id" FROM "items"`)
 	ds.False(found)
-	ds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	ds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 	found, err = db.ScanVal(10, `SELECT "id" FROM "items"`)
 	ds.False(found)
-	ds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	ds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 }
 
 func (ds *databaseSuite) TestExec() {
@@ -186,7 +186,7 @@ func (ds *databaseSuite) TestExec() {
 	_, err = db.Exec(`UPDATE "items" SET "address"='111 Test Addr',"name"='Test1' WHERE ("name" IS NULL)`)
 	ds.NoError(err)
 	_, err = db.Exec(`UPDATE "items" SET "address"='111 Test Addr',"name"='Test1' WHERE ("name" IS NULL)`)
-	ds.EqualError(err, "goqu: mock error")
+	ds.EqualError(err, "depiq: mock error")
 }
 
 func (ds *databaseSuite) TestQuery() {
@@ -203,10 +203,10 @@ func (ds *databaseSuite) TestQuery() {
 
 	db := depiq.New("mock", mDB)
 	_, err = db.Query(`SELECT * FROM "items"`)
-	ds.NoError(err, "goqu - mock error")
+	ds.NoError(err, "depiq - mock error")
 
 	_, err = db.Query(`SELECT * FROM "items"`)
-	ds.EqualError(err, "goqu: mock error")
+	ds.EqualError(err, "depiq: mock error")
 }
 
 func (ds *databaseSuite) TestQueryRow() {
@@ -228,7 +228,7 @@ func (ds *databaseSuite) TestQueryRow() {
 	ds.NoError(rows.Scan(&address, &name))
 
 	rows = db.QueryRow(`SELECT * FROM "items"`)
-	ds.EqualError(rows.Scan(&address, &name), "goqu: mock error")
+	ds.EqualError(rows.Scan(&address, &name), "depiq: mock error")
 }
 
 func (ds *databaseSuite) TestPrepare() {
@@ -252,7 +252,7 @@ func (ds *databaseSuite) TestBegin() {
 	ds.Equal("mock", tx.Dialect())
 
 	_, err = db.Begin()
-	ds.EqualError(err, "goqu: transaction error")
+	ds.EqualError(err, "depiq: transaction error")
 }
 
 func (ds *databaseSuite) TestBeginTx() {
@@ -267,7 +267,7 @@ func (ds *databaseSuite) TestBeginTx() {
 	ds.Equal("mock", tx.Dialect())
 
 	_, err = db.BeginTx(ctx, nil)
-	ds.EqualError(err, "goqu: transaction error")
+	ds.EqualError(err, "depiq: transaction error")
 }
 
 func (ds *databaseSuite) TestWithTx() {
@@ -296,7 +296,7 @@ func (ds *databaseSuite) TestWithTx() {
 			},
 			f:       func(_ *depiq.TxDatabase) error { return nil },
 			wantErr: true,
-			errStr:  "goqu: transaction begin error",
+			errStr:  "depiq: transaction begin error",
 		},
 		{
 			expectf: func(mock sqlmock.Sqlmock) {
@@ -305,7 +305,7 @@ func (ds *databaseSuite) TestWithTx() {
 			},
 			f:       func(_ *depiq.TxDatabase) error { return errors.New("transaction error") },
 			wantErr: true,
-			errStr:  "goqu: transaction error",
+			errStr:  "depiq: transaction error",
 		},
 		{
 			expectf: func(mock sqlmock.Sqlmock) {
@@ -314,7 +314,7 @@ func (ds *databaseSuite) TestWithTx() {
 			},
 			f:       func(_ *depiq.TxDatabase) error { return errors.New("something wrong") },
 			wantErr: true,
-			errStr:  "goqu: transaction rollback error",
+			errStr:  "depiq: transaction rollback error",
 		},
 		{
 			expectf: func(mock sqlmock.Sqlmock) {
@@ -323,7 +323,7 @@ func (ds *databaseSuite) TestWithTx() {
 			},
 			f:       func(_ *depiq.TxDatabase) error { return nil },
 			wantErr: true,
-			errStr:  "goqu: commit error",
+			errStr:  "depiq: commit error",
 		},
 	}
 	for _, c := range cases {
@@ -425,9 +425,9 @@ func (tds *txdatabaseSuite) TestLogger() {
 	tds.NoError(err)
 	tds.NoError(tx.Commit())
 	tds.Equal([]string{
-		"[goqu - transaction] QUERY [query:=`SELECT * FROM \"items\"`] ",
-		"[goqu - transaction] EXEC [query:=`SELECT * FROM \"items\" WHERE \"id\" = ?` args:=[1]] ",
-		"[goqu - transaction] COMMIT",
+		"[depiq - transaction] QUERY [query:=`SELECT * FROM \"items\"`] ",
+		"[depiq - transaction] EXEC [query:=`SELECT * FROM \"items\" WHERE \"id\" = ?` args:=[1]] ",
+		"[depiq - transaction] COMMIT",
 	}, logger.Messages)
 }
 
@@ -457,9 +457,9 @@ func (tds *txdatabaseSuite) TestLogger_FromDb() {
 	tds.NoError(err)
 	tds.NoError(tx.Commit())
 	tds.Equal([]string{
-		"[goqu - transaction] QUERY [query:=`SELECT * FROM \"items\"`] ",
-		"[goqu - transaction] EXEC [query:=`SELECT * FROM \"items\" WHERE \"id\" = ?` args:=[1]] ",
-		"[goqu - transaction] COMMIT",
+		"[depiq - transaction] QUERY [query:=`SELECT * FROM \"items\"`] ",
+		"[depiq - transaction] EXEC [query:=`SELECT * FROM \"items\" WHERE \"id\" = ?` args:=[1]] ",
+		"[depiq - transaction] COMMIT",
 	}, logger.Messages)
 }
 
@@ -531,11 +531,11 @@ func (tds *txdatabaseSuite) TestScanStructs() {
 
 	items = items[0:0]
 	tds.EqualError(tx.ScanStructs(items, `SELECT * FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	tds.EqualError(tx.ScanStructs(&testActionItem{}, `SELECT * FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	tds.EqualError(tx.ScanStructs(&items, `SELECT "test" FROM "items"`),
-		`goqu: unable to find corresponding field to column "test" returned by query`)
+		`depiq: unable to find corresponding field to column "test" returned by query`)
 	tds.NoError(tx.Commit())
 }
 
@@ -562,11 +562,11 @@ func (tds *txdatabaseSuite) TestScanStruct() {
 	tds.Equal("Test1", item.Name)
 
 	_, err = tx.ScanStruct(item, `SELECT * FROM "items" LIMIT 1`)
-	tds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	tds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = tx.ScanStruct([]testActionItem{}, `SELECT * FROM "items" LIMIT 1`)
-	tds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	tds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = tx.ScanStruct(&item, `SELECT "test" FROM "items" LIMIT 1`)
-	tds.EqualError(err, `goqu: unable to find corresponding field to column "test" returned by query`)
+	tds.EqualError(err, `depiq: unable to find corresponding field to column "test" returned by query`)
 	tds.NoError(tx.Commit())
 }
 
@@ -592,9 +592,9 @@ func (tds *txdatabaseSuite) TestScanVals() {
 	tds.Len(ids, 5)
 
 	tds.EqualError(tx.ScanVals([]uint32{}, `SELECT "id" FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 	tds.EqualError(tx.ScanVals(testActionItem{}, `SELECT "id" FROM "items"`),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 	tds.NoError(tx.Commit())
 }
 
@@ -617,10 +617,10 @@ func (tds *txdatabaseSuite) TestScanVal() {
 
 	found, err = tx.ScanVal([]int64{}, `SELECT "id" FROM "items"`)
 	tds.False(found)
-	tds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	tds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 	found, err = tx.ScanVal(10, `SELECT "id" FROM "items"`)
 	tds.False(found)
-	tds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	tds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 	tds.NoError(tx.Commit())
 }
 
@@ -642,7 +642,7 @@ func (tds *txdatabaseSuite) TestExec() {
 	_, err = tx.Exec(`UPDATE "items" SET "address"='111 Test Addr',"name"='Test1' WHERE ("name" IS NULL)`)
 	tds.NoError(err)
 	_, err = tx.Exec(`UPDATE "items" SET "address"='111 Test Addr',"name"='Test1' WHERE ("name" IS NULL)`)
-	tds.EqualError(err, "goqu: mock error")
+	tds.EqualError(err, "depiq: mock error")
 	tds.NoError(tx.Commit())
 }
 
@@ -663,10 +663,10 @@ func (tds *txdatabaseSuite) TestQuery() {
 	tx, err := db.Begin()
 	tds.NoError(err)
 	_, err = tx.Query(`SELECT * FROM "items"`)
-	tds.NoError(err, "goqu - mock error")
+	tds.NoError(err, "depiq - mock error")
 
 	_, err = tx.Query(`SELECT * FROM "items"`)
-	tds.EqualError(err, "goqu: mock error")
+	tds.EqualError(err, "depiq: mock error")
 	tds.NoError(tx.Commit())
 }
 
@@ -692,7 +692,7 @@ func (tds *txdatabaseSuite) TestQueryRow() {
 	tds.NoError(rows.Scan(&address, &name))
 
 	rows = tx.QueryRow(`SELECT * FROM "items"`)
-	tds.EqualError(rows.Scan(&address, &name), "goqu: mock error")
+	tds.EqualError(rows.Scan(&address, &name), "depiq: mock error")
 	tds.NoError(tx.Commit())
 }
 
@@ -713,7 +713,7 @@ func (tds *txdatabaseSuite) TestWrap() {
 	tds.NoError(err)
 	tds.EqualError(tx.Wrap(func() error {
 		return errors.New("tx error")
-	}), "goqu: tx error")
+	}), "depiq: tx error")
 }
 
 func (tds *txdatabaseSuite) TestDataRace() {

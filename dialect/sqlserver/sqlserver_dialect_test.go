@@ -50,8 +50,8 @@ func (sds *sqlserverDialectSuite) TestBitwiseOperations() {
 		sqlTestCase{ds: ds.Where(col.BitwiseAnd(1)), sql: "SELECT * FROM \"test\" WHERE (\"a\" & 1)"},
 		sqlTestCase{ds: ds.Where(col.BitwiseOr(1)), sql: "SELECT * FROM \"test\" WHERE (\"a\" | 1)"},
 		sqlTestCase{ds: ds.Where(col.BitwiseXor(1)), sql: "SELECT * FROM \"test\" WHERE (\"a\" ^ 1)"},
-		sqlTestCase{ds: ds.Where(col.BitwiseLeftShift(1)), err: "goqu: bitwise operator 'Left Shift' not supported"},
-		sqlTestCase{ds: ds.Where(col.BitwiseRightShift(1)), err: "goqu: bitwise operator 'Right Shift' not supported"},
+		sqlTestCase{ds: ds.Where(col.BitwiseLeftShift(1)), err: "depiq: bitwise operator 'Left Shift' not supported"},
+		sqlTestCase{ds: ds.Where(col.BitwiseRightShift(1)), err: "depiq: bitwise operator 'Right Shift' not supported"},
 	)
 }
 

@@ -91,7 +91,7 @@ func (ssgs *selectSQLGeneratorSuite) TestGenerate_UnsupportedFragment() {
 	opts.SelectSQLOrder = []sqlgen.SQLFragmentType{sqlgen.InsertBeingSQLFragment}
 
 	sc := exp.NewSelectClauses().SetFrom(exp.NewColumnListExpression("test"))
-	expectedErr := "goqu: unsupported SELECT SQL fragment InsertBeingSQLFragment"
+	expectedErr := "depiq: unsupported SELECT SQL fragment InsertBeingSQLFragment"
 	ssgs.assertCases(
 		sqlgen.NewSelectSQLGenerator("test", opts),
 		selectTestCase{clause: sc, err: expectedErr},
@@ -107,7 +107,7 @@ func (ssgs *selectSQLGeneratorSuite) TestGenerate_WithErroredBuilder() {
 	b := sb.NewSQLBuilder(true).SetError(errors.New("test error"))
 	c := exp.NewSelectClauses().SetFrom(exp.NewColumnListExpression("test"))
 	d.Generate(b, c)
-	ssgs.assertErrorSQL(b, `goqu: test error`)
+	ssgs.assertErrorSQL(b, `depiq: test error`)
 }
 
 func (ssgs *selectSQLGeneratorSuite) TestGenerate_withSelectedColumns() {
@@ -181,7 +181,7 @@ func (ssgs *selectSQLGeneratorSuite) TestGenerate_withDistinct() {
 
 	opts = sqlgen.DefaultDialectOptions()
 	opts.SupportsDistinctOn = false
-	expectedErr := "goqu: dialect does not support DISTINCT ON clause [dialect=test]"
+	expectedErr := "depiq: dialect does not support DISTINCT ON clause [dialect=test]"
 	ssgs.assertCases(
 		sqlgen.NewSelectSQLGenerator("test", opts),
 		selectTestCase{clause: sc, sql: `SELECT DISTINCT *`},
@@ -226,8 +226,8 @@ func (ssgs *selectSQLGeneratorSuite) TestGenerate_withJoin() {
 	rj := exp.NewConditionedJoinExpression(exp.RightJoinType, ti, exp.NewJoinUsingCondition(exp.NewIdentifierExpression("", "", "a")))
 	badJoin := exp.NewConditionedJoinExpression(exp.LeftJoinType, ti, exp.NewJoinUsingCondition())
 
-	expectedRjError := "goqu: dialect does not support RightJoinType"
-	expectedJoinCondError := "goqu: join condition required for conditioned join LeftJoinType"
+	expectedRjError := "depiq: dialect does not support RightJoinType"
+	expectedJoinCondError := "depiq: join condition required for conditioned join LeftJoinType"
 	ssgs.assertCases(
 		sqlgen.NewSelectSQLGenerator("test", opts),
 		selectTestCase{clause: sc.JoinsAppend(uj), sql: `SELECT * FROM "test" natural join "test2"`},

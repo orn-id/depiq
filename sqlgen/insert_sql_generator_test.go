@@ -56,7 +56,7 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_UnsupportedFragment() {
 	ic := exp.NewInsertClauses().
 		SetInto(exp.NewIdentifierExpression("", "test", ""))
 	d.Generate(b, ic)
-	igs.assertErrorSQL(b, `goqu: unsupported INSERT SQL fragment UpdateBeginSQLFragment`)
+	igs.assertErrorSQL(b, `depiq: unsupported INSERT SQL fragment UpdateBeginSQLFragment`)
 }
 
 func (igs *insertSQLGeneratorSuite) TestGenerate_empty() {
@@ -127,8 +127,8 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_colsAndVals() {
 			"a1", "b1", "a2", "b2", "a3", "b3",
 		}},
 
-		insertTestCase{clause: bic, err: `goqu: rows with different value length expected 1 got 2`},
-		insertTestCase{clause: bic, err: `goqu: rows with different value length expected 1 got 2`, isPrepared: true},
+		insertTestCase{clause: bic, err: `depiq: rows with different value length expected 1 got 2`},
+		insertTestCase{clause: bic, err: `depiq: rows with different value length expected 1 got 2`, isPrepared: true},
 	)
 }
 
@@ -149,7 +149,7 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_withNoInto() {
 			{"a2", "b2"},
 			{"a3", "b3"},
 		})
-	expectedErr := "goqu: no source found when generating insert sql"
+	expectedErr := "depiq: no source found when generating insert sql"
 	igs.assertCases(
 		sqlgen.NewInsertSQLGenerator("test", opts),
 		insertTestCase{clause: ic, err: expectedErr},
@@ -188,8 +188,8 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_withRows() {
 			"a1", "b1", "a2", "b2", "a3", "b3",
 		}},
 
-		insertTestCase{clause: bic, err: `goqu: rows with different value length expected 1 got 2`},
-		insertTestCase{clause: bic, err: `goqu: rows with different value length expected 1 got 2`, isPrepared: true},
+		insertTestCase{clause: bic, err: `depiq: rows with different value length expected 1 got 2`},
+		insertTestCase{clause: bic, err: `depiq: rows with different value length expected 1 got 2`, isPrepared: true},
 	)
 }
 
@@ -316,8 +316,8 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_onConflict() {
 		insertTestCase{clause: icDuNil, err: sqlgen.ErrConflictUpdateValuesRequired.Error()},
 		insertTestCase{clause: icDuNil, err: sqlgen.ErrConflictUpdateValuesRequired.Error(), isPrepared: true},
 
-		insertTestCase{clause: icDuBad, err: "goqu: unsupported update interface type bool"},
-		insertTestCase{clause: icDuBad, err: "goqu: unsupported update interface type bool", isPrepared: true},
+		insertTestCase{clause: icDuBad, err: "depiq: unsupported update interface type bool"},
+		insertTestCase{clause: icDuBad, err: "depiq: unsupported update interface type bool", isPrepared: true},
 	)
 	opts.SupportsInsertIgnoreSyntax = true
 	opts.InsertIgnoreClause = []byte("insert ignore into")
@@ -367,12 +367,12 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_onConflict() {
 		insertTestCase{clause: icDuNil, err: sqlgen.ErrConflictUpdateValuesRequired.Error()},
 		insertTestCase{clause: icDuNil, err: sqlgen.ErrConflictUpdateValuesRequired.Error(), isPrepared: true},
 
-		insertTestCase{clause: icDuBad, err: "goqu: unsupported update interface type bool"},
-		insertTestCase{clause: icDuBad, err: "goqu: unsupported update interface type bool", isPrepared: true},
+		insertTestCase{clause: icDuBad, err: "depiq: unsupported update interface type bool"},
+		insertTestCase{clause: icDuBad, err: "depiq: unsupported update interface type bool", isPrepared: true},
 	)
 
 	opts.SupportsConflictUpdateWhere = false
-	expectedErr := "goqu: dialect does not support upsert with where clause [dialect=test]"
+	expectedErr := "depiq: dialect does not support upsert with where clause [dialect=test]"
 	igs.assertCases(
 		sqlgen.NewInsertSQLGenerator("test", opts),
 		insertTestCase{clause: icDuw, err: expectedErr},
@@ -415,7 +415,7 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_withCommonTables() {
 	)
 
 	opts.SupportsWithCTE = false
-	expectedErr := "goqu: dialect does not support CTE WITH clause [dialect=test]"
+	expectedErr := "depiq: dialect does not support CTE WITH clause [dialect=test]"
 	igs.assertCases(
 		sqlgen.NewInsertSQLGenerator("test", opts),
 		insertTestCase{clause: icCte1, err: expectedErr},
@@ -427,7 +427,7 @@ func (igs *insertSQLGeneratorSuite) TestGenerate_withCommonTables() {
 
 	opts.SupportsWithCTE = true
 	opts.SupportsWithCTERecursive = false
-	expectedErr = "goqu: dialect does not support CTE WITH RECURSIVE clause [dialect=test]"
+	expectedErr = "depiq: dialect does not support CTE WITH RECURSIVE clause [dialect=test]"
 	igs.assertCases(
 		sqlgen.NewInsertSQLGenerator("test", opts),
 		insertTestCase{

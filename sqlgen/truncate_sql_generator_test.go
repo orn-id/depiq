@@ -56,7 +56,7 @@ func (tsgs *truncateSQLGeneratorSuite) TestGenerate() {
 	tcSingle := tcNoTable.SetTable(exp.NewColumnListExpression("a"))
 	tcMulti := exp.NewTruncateClauses().SetTable(exp.NewColumnListExpression("a", "b"))
 
-	expectedNoSourceErr := "goqu: no source found when generating truncate sql"
+	expectedNoSourceErr := "depiq: no source found when generating truncate sql"
 	tsgs.assertCases(
 		sqlgen.NewTruncateSQLGenerator("test", opts),
 		truncateTestCase{clause: tcSingle, sql: `truncate "a"`},
@@ -74,7 +74,7 @@ func (tsgs *truncateSQLGeneratorSuite) TestGenerate_UnsupportedFragment() {
 	opts := sqlgen.DefaultDialectOptions()
 	opts.TruncateSQLOrder = []sqlgen.SQLFragmentType{sqlgen.UpdateBeginSQLFragment}
 	tc := exp.NewTruncateClauses().SetTable(exp.NewColumnListExpression("a"))
-	expectedErr := "goqu: unsupported TRUNCATE SQL fragment UpdateBeginSQLFragment"
+	expectedErr := "depiq: unsupported TRUNCATE SQL fragment UpdateBeginSQLFragment"
 	tsgs.assertCases(
 		sqlgen.NewTruncateSQLGenerator("test", opts),
 		truncateTestCase{clause: tc, err: expectedErr},
@@ -89,7 +89,7 @@ func (tsgs *truncateSQLGeneratorSuite) TestGenerate_WithErroredBuilder() {
 
 	b := sb.NewSQLBuilder(true).SetError(errors.New("expected error"))
 	d.Generate(b, exp.NewTruncateClauses().SetTable(exp.NewColumnListExpression("a")))
-	tsgs.assertErrorSQL(b, `goqu: expected error`)
+	tsgs.assertErrorSQL(b, `depiq: expected error`)
 }
 
 func (tsgs *truncateSQLGeneratorSuite) TestGenerate_WithCascade() {

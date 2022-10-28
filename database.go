@@ -49,7 +49,7 @@ type (
 //      )
 //
 //      func main() {
-//          sqlDb, err := sql.Open("postgres", "user=postgres dbname=goqupostgres sslmode=disable ")
+//          sqlDb, err := sql.Open("postgres", "user=postgres dbname=depiqpostgres sslmode=disable ")
 //          if err != nil {
 //              panic(err.Error())
 //          }
@@ -150,12 +150,12 @@ func (d *Database) Trace(op, sqlString string, args ...interface{}) {
 	if d.logger != nil {
 		if sqlString != "" {
 			if len(args) != 0 {
-				d.logger.Printf("[goqu] %s [query:=`%s` args:=%+v]", op, sqlString, args)
+				d.logger.Printf("[depiq] %s [query:=`%s` args:=%+v]", op, sqlString, args)
 			} else {
-				d.logger.Printf("[goqu] %s [query:=`%s`]", op, sqlString)
+				d.logger.Printf("[depiq] %s [query:=`%s`]", op, sqlString)
 			}
 		} else {
-			d.logger.Printf("[goqu] %s", op)
+			d.logger.Printf("[depiq] %s", op)
 		}
 	}
 }
@@ -500,12 +500,12 @@ func (td *TxDatabase) Trace(op, sqlString string, args ...interface{}) {
 	if td.logger != nil {
 		if sqlString != "" {
 			if len(args) != 0 {
-				td.logger.Printf("[goqu - transaction] %s [query:=`%s` args:=%+v] ", op, sqlString, args)
+				td.logger.Printf("[depiq - transaction] %s [query:=`%s` args:=%+v] ", op, sqlString, args)
 			} else {
-				td.logger.Printf("[goqu - transaction] %s [query:=`%s`] ", op, sqlString)
+				td.logger.Printf("[depiq - transaction] %s [query:=`%s`] ", op, sqlString)
 			}
 		} else {
-			td.logger.Printf("[goqu - transaction] %s", op)
+			td.logger.Printf("[depiq - transaction] %s", op)
 		}
 	}
 }

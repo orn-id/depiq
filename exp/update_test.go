@@ -13,7 +13,7 @@ type updateExpressionTestSuite struct {
 
 func (uets *updateExpressionTestSuite) TestNewUpdateExpressions_withInvalidValue() {
 	_, err := exp.NewUpdateExpressions(true)
-	uets.EqualError(err, "goqu: unsupported update interface type bool")
+	uets.EqualError(err, "depiq: unsupported update interface type bool")
 }
 
 func (uets *updateExpressionTestSuite) TestNewUpdateExpressions_withRecords() {
@@ -84,8 +84,8 @@ func (uets *updateExpressionTestSuite) TestNewUpdateExpressions_withStructsIgnor
 func (uets *updateExpressionTestSuite) TestNewUpdateExpressions_withStructsWithGoquSkipUpdate() {
 	type testRecord struct {
 		FieldA int64
-		FieldB bool   `goqu:"skipupdate"`
-		FieldC string `goqu:"skipinsert"`
+		FieldB bool   `depiq:"skipupdate"`
+		FieldC string `depiq:"skipinsert"`
 	}
 	ie, err := exp.NewUpdateExpressions(testRecord{FieldA: 1, FieldB: true, FieldC: "a"})
 	uets.NoError(err)

@@ -215,7 +215,7 @@ Each dataset type will have an `Executor` and `ToSQL` method so a common interfa
 
 ## v7.3.1
 
-* [ADDED] Exposed `depiq.NewTx` to allow creating a goqu tx directly from a `sql.Tx` instead of using `depiq.Database#Begin` [#95](https://github.com/orn-id/depiq/issues/95)
+* [ADDED] Exposed `depiq.NewTx` to allow creating a depiq tx directly from a `sql.Tx` instead of using `depiq.Database#Begin` [#95](https://github.com/orn-id/depiq/issues/95)
 * [ADDED] `depiq.Database.BeginTx` [#98](https://github.com/orn-id/depiq/issues/98)
 
 ## v7.3.0
@@ -260,12 +260,12 @@ Each dataset type will have an `Executor` and `ToSQL` method so a common interfa
 * Refactored the `depiq.I` method.
     * Added new `depiq.S`, `depiq.T` and `depiq.C` methods to clarify why type of identifier you are using.
     * `depiq.I` should only be used when you have a qualified identifier (e.g. `depiq.I("my_schema.my_table.my_col")
-* Added new `depiq.Dialect` method to make using `goqu` as an SQL builder easier.
+* Added new `depiq.Dialect` method to make using `depiq` as an SQL builder easier.
 
 **Internal Changes**
 * Pulled expressions into their own package
     * Broke up expressions.go into multiple files to make working with and defining them easier.
-    * Moved the user facing methods into the main `goqu` to keep the same API as before.
+    * Moved the user facing methods into the main `depiq` to keep the same API as before.
 * Added more examples
 * Moved non-user facing structs and interfaces to internal modules to clean up API.
 * Increased test coverage.

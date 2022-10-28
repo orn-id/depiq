@@ -131,7 +131,7 @@ func (ets *exTestSuite) TestToExpression() {
 		},
 		{
 			ExMap: exp.Ex{"a": exp.Op{"foo": "z"}},
-			Err:   "goqu: unsupported expression type foo",
+			Err:   "depiq: unsupported expression type foo",
 		},
 		{
 			ExMap: exp.Ex{"a": exp.Op{"eq": "b", "neq": "c", "gt": "m"}},
@@ -287,7 +287,7 @@ func (ets *exOrTestSuite) TestToExpression() {
 		},
 		{
 			ExMap: exp.ExOr{"a": exp.Op{"foo": "z"}},
-			Err:   "goqu: unsupported expression type foo",
+			Err:   "depiq: unsupported expression type foo",
 		},
 		{
 			ExMap: exp.ExOr{"a": exp.Op{"eq": "b", "neq": "c", "gt": "m"}},

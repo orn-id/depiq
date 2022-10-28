@@ -76,8 +76,8 @@ func (dsgs *deleteSQLGeneratorSuite) TestGenerate_withUnsupportedFragment() {
 
 	dsgs.assertCases(
 		sqlgen.NewDeleteSQLGenerator("test", opts),
-		deleteTestCase{clause: dc, err: `goqu: unsupported DELETE SQL fragment InsertBeingSQLFragment`},
-		deleteTestCase{clause: dc, err: `goqu: unsupported DELETE SQL fragment InsertBeingSQLFragment`, isPrepared: true},
+		deleteTestCase{clause: dc, err: `depiq: unsupported DELETE SQL fragment InsertBeingSQLFragment`},
+		deleteTestCase{clause: dc, err: `depiq: unsupported DELETE SQL fragment InsertBeingSQLFragment`, isPrepared: true},
 	)
 }
 
@@ -97,11 +97,11 @@ func (dsgs *deleteSQLGeneratorSuite) TestGenerate_withErroredBuilder() {
 	dc := exp.NewDeleteClauses().SetFrom(exp.NewIdentifierExpression("", "test", ""))
 	b := sb.NewSQLBuilder(false).SetError(errors.New("expected error"))
 	d.Generate(b, dc)
-	dsgs.assertErrorSQL(b, "goqu: expected error")
+	dsgs.assertErrorSQL(b, "depiq: expected error")
 
 	b = sb.NewSQLBuilder(true).SetError(errors.New("expected error"))
 	d.Generate(b, dc)
-	dsgs.assertErrorSQL(b, "goqu: expected error")
+	dsgs.assertErrorSQL(b, "depiq: expected error")
 }
 
 func (dsgs *deleteSQLGeneratorSuite) TestGenerate_withCommonTables() {
@@ -220,7 +220,7 @@ func (dsgs *deleteSQLGeneratorSuite) TestGenerate_withReturning() {
 	)
 
 	opts.SupportsReturn = false
-	expectedErr := `goqu: dialect does not support RETURNING clause [dialect=test]`
+	expectedErr := `depiq: dialect does not support RETURNING clause [dialect=test]`
 	dsgs.assertCases(
 		sqlgen.NewDeleteSQLGenerator("test", opts),
 		deleteTestCase{clause: dc, err: expectedErr},

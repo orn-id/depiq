@@ -20,7 +20,7 @@ func ExampleDelete() {
 func ExampleDeleteDataset_Executor() {
 	db := getDB()
 
-	de := db.Delete("goqu_user").
+	de := db.Delete("depiq_user").
 		Where(depiq.Ex{"first_name": "Bob"}).
 		Executor()
 	if r, err := de.Exec(); err != nil {
@@ -37,7 +37,7 @@ func ExampleDeleteDataset_Executor() {
 func ExampleDeleteDataset_Executor_returning() {
 	db := getDB()
 
-	de := db.Delete("goqu_user").
+	de := db.Delete("depiq_user").
 		Where(depiq.C("last_name").Eq("Yukon")).
 		Returning(depiq.C("id")).
 		Executor()

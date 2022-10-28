@@ -53,7 +53,7 @@ func (gis *githubIssuesSuite) TestIssue115() {
 	})
 
 	_, _, err := depiq.Insert("test").Rows(TestStruct{Field: "hello"}).ToSQL()
-	gis.EqualError(err, `goqu: a empty identifier was encountered, please specify a "schema", "table" or "column"`)
+	gis.EqualError(err, `depiq: a empty identifier was encountered, please specify a "schema", "table" or "column"`)
 }
 
 // Test for https://github.com/orn-id/depiq/issues/118
@@ -69,10 +69,10 @@ func (gis *githubIssuesSuite) TestIssue118_withEmbeddedStructWithoutExportedFiel
 	type Role struct {
 		*SimpleRole
 
-		ID        string    `json:"id" db:"id" goqu:"skipinsert"`
+		ID        string    `json:"id" db:"id" depiq:"skipinsert"`
 		Key       string    `json:"key" db:"key"`
 		Name      string    `json:"name" db:"name"`
-		CreatedAt time.Time `json:"-" db:"created_at" goqu:"skipinsert"`
+		CreatedAt time.Time `json:"-" db:"created_at" depiq:"skipinsert"`
 	}
 
 	rUser := &Role{
@@ -140,10 +140,10 @@ func (gis *githubIssuesSuite) TestIssue118_withNilEmbeddedStructWithExportedFiel
 	type Role struct {
 		*SimpleRole
 
-		ID        string    `json:"id" db:"id" goqu:"skipinsert"`
+		ID        string    `json:"id" db:"id" depiq:"skipinsert"`
 		Key       string    `json:"key" db:"key"`
 		Name      string    `json:"name" db:"name"`
-		CreatedAt time.Time `json:"-" db:"created_at" goqu:"skipinsert"`
+		CreatedAt time.Time `json:"-" db:"created_at" depiq:"skipinsert"`
 	}
 
 	rUser := &Role{
@@ -452,8 +452,8 @@ func (gis *githubIssuesSuite) TestIssue203() {
 
 func (gis *githubIssuesSuite) TestIssue290() {
 	type OcomModel struct {
-		ID           uint      `json:"id" db:"id" goqu:"skipinsert"`
-		CreatedDate  time.Time `json:"created_date" db:"created_date" goqu:"skipupdate"`
+		ID           uint      `json:"id" db:"id" depiq:"skipinsert"`
+		CreatedDate  time.Time `json:"created_date" db:"created_date" depiq:"skipupdate"`
 		ModifiedDate time.Time `json:"modified_date" db:"modified_date"`
 	}
 
