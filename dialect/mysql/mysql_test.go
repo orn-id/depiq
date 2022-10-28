@@ -95,7 +95,7 @@ func (mt *mysqlTest) assertSQL(cases ...sqlTestCase) {
 func (mt *mysqlTest) assertEntries(cases ...entryTestCase) {
 	for i, c := range cases {
 		var entries []entry
-		err := c.ds.ScanStructs(&entries)
+		err := c.ds.Fetch(&entries)
 		if c.err == "" {
 			mt.NoError(err, "test case %d failed", i)
 		} else {
@@ -249,7 +249,7 @@ func (mt *mysqlTest) TestQuery_ValueExpressions() {
 	mt.NoError(err)
 	ds := mt.db.From("entry").Select(depiq.Star(), depiq.V(true).As("bool_value")).Where(depiq.Ex{"int": 1})
 	var we wrappedEntry
-	found, err := ds.ScanStruct(&we)
+	found, err := ds.FecthRow(&we)
 	mt.NoError(err)
 	mt.True(found)
 	mt.Equal(wrappedEntry{
@@ -285,7 +285,7 @@ func (mt *mysqlTest) TestInsert() {
 	mt.NoError(err)
 
 	var insertedEntry entry
-	found, err := ds.Where(depiq.C("int").Eq(10)).ScanStruct(&insertedEntry)
+	found, err := ds.Where(depiq.C("int").Eq(10)).FecthRow(&insertedEntry)
 	mt.NoError(err)
 	mt.True(found)
 	mt.True(insertedEntry.ID > 0)
@@ -300,7 +300,7 @@ func (mt *mysqlTest) TestInsert() {
 	mt.NoError(err)
 
 	var newEntries []entry
-	mt.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).ScanStructs(&newEntries))
+	mt.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).Fetch(&newEntries))
 	mt.Len(newEntries, 4)
 	for i, e := range newEntries {
 		mt.Equal(entries[i].Int, e.Int)
@@ -320,7 +320,7 @@ func (mt *mysqlTest) TestInsert() {
 	mt.NoError(err)
 
 	newEntries = newEntries[0:0]
-	mt.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).ScanStructs(&newEntries))
+	mt.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).Fetch(&newEntries))
 	mt.Len(newEntries, 4)
 }
 
@@ -335,7 +335,7 @@ func (mt *mysqlTest) TestInsertReturning() {
 func (mt *mysqlTest) TestUpdate() {
 	ds := mt.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	mt.NoError(err)
 	mt.True(found)
 	e.Int = 11
@@ -362,7 +362,7 @@ func (mt *mysqlTest) TestUpdateReturning() {
 func (mt *mysqlTest) TestDelete() {
 	ds := mt.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	mt.NoError(err)
 	mt.True(found)
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Executor().Exec()
@@ -378,7 +378,7 @@ func (mt *mysqlTest) TestDelete() {
 	mt.False(found)
 
 	e = entry{}
-	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").ScanStruct(&e)
+	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").FecthRow(&e)
 	mt.NoError(err)
 	mt.True(found)
 	mt.NotEqual(0, e.ID)
@@ -428,7 +428,7 @@ func (mt *mysqlTest) TestInsert_OnConflict() {
 		OnConflict(depiq.DoUpdate("int", depiq.Record{"string": "upsert"})).
 		Executor().Exec()
 	mt.NoError(err)
-	_, err = ds.Where(depiq.C("int").Eq(10)).ScanStruct(&entryActual)
+	_, err = ds.Where(depiq.C("int").Eq(10)).FecthRow(&entryActual)
 	mt.NoError(err)
 	mt.Equal("upsert", entryActual.String)
 
@@ -465,7 +465,7 @@ func (mt *mysqlTest) TestWindowFunction() {
 		Window(depiq.W("w").OrderBy(depiq.I("int").Desc()))
 
 	var entries []entry
-	mt.NoError(ds.WithDialect("mysql8").ScanStructs(&entries))
+	mt.NoError(ds.WithDialect("mysql8").Fetch(&entries))
 
 	mt.Equal([]entry{
 		{Int: 9, ID: 1},
@@ -480,7 +480,7 @@ func (mt *mysqlTest) TestWindowFunction() {
 		{Int: 0, ID: 10},
 	}, entries)
 
-	mt.Error(ds.WithDialect("mysql").ScanStructs(&entries), "goqu: adapter does not support window function clause")
+	mt.Error(ds.WithDialect("mysql").Fetch(&entries), "goqu: adapter does not support window function clause")
 }
 
 func (mt *mysqlTest) TestInsertFromSelect() {
