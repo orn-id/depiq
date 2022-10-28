@@ -16,8 +16,8 @@
   * [`SetError`](#seterror)
   * [`ForUpdate`](#forupdate)
 * Executing Queries
-  * [`ScanStructs`](#scan-structs) - Scans rows into a slice of structs
-  * [`ScanStruct`](#scan-struct) - Scans a row into a slice a struct, returns false if a row wasnt found
+  * [`Fetch`](#scan-structs) - Scans rows into a slice of structs
+  * [`FetchRow`](#scan-struct) - Scans a row into a slice a struct, returns false if a row wasnt found
   * [`ScanVals`](#scan-vals)- Scans a rows of 1 column into a slice of primitive values
   * [`ScanVal`](#scan-val) - Scans a row of 1 column into a primitive value, returns false if a row wasnt found.
   * [`Scanner`](#scanner) - Allows you to interatively scan rows into structs or values.
@@ -906,11 +906,11 @@ SELECT * FROM "test" FOR UPDATE OF "test"
 To execute your query use [`depiq.Database#From`](https://godoc.org/github.com/orn-id/depiq/#Database.From) to create your dataset
 
 <a name="scan-structs"></a>
-**[`ScanStructs`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.ScanStructs)**
+**[`Fetch`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.Fetch)**
 
 Scans rows into a slice of structs
 
-**NOTE** [`ScanStructs`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.ScanStructs) will only select the columns that can be scanned in to the structs unless you have explicitly selected certain columns.
+**NOTE** [`Fetch`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.Fetch) will only select the columns that can be scanned in to the structs unless you have explicitly selected certain columns.
 
  ```go
 type User struct{
@@ -921,14 +921,14 @@ type User struct{
 
 var users []User
 //SELECT "first_name", "last_name" FROM "user";
-if err := db.From("user").ScanStructs(&users); err != nil{
+if err := db.From("user").Fetch(&users); err != nil{
   panic(err.Error())
 }
 fmt.Printf("\n%+v", users)
 
 var users []User
 //SELECT "first_name" FROM "user";
-if err := db.From("user").Select("first_name").ScanStructs(&users); err != nil{
+if err := db.From("user").Select("first_name").Fetch(&users); err != nil{
   panic(err.Error())
 }
 fmt.Printf("\n%+v", users)
@@ -936,7 +936,7 @@ fmt.Printf("\n%+v", users)
 
 `depiq` also supports scanning into multiple structs. In the example below we define a `Role` and `User` struct that could both be used individually to scan into. However, you can also create a new struct that adds both structs as fields that can be populated in a single query.
 
-**NOTE** When calling `ScanStructs` without a select already defined it will automatically only `SELECT` the columns found in the struct, omitting any that are tagged with `db:"-"`
+**NOTE** When calling `Fetch` without a select already defined it will automatically only `SELECT` the columns found in the struct, omitting any that are tagged with `db:"-"`
 
  ```go
 type Role struct {
@@ -960,7 +960,7 @@ ds := db.
 	Join(depiq.T("user_role"), depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id"))))
 var users []UserAndRole
 	// Scan structs will auto build the
-if err := ds.ScanStructs(&users); err != nil {
+if err := ds.Fetch(&users); err != nil {
 	fmt.Println(err.Error())
 	return
 }
@@ -997,7 +997,7 @@ ds := db.
 	Join(depiq.T("user_role"), depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id"))))
 
 var users []User
-if err := ds.ScanStructs(&users); err != nil {
+if err := ds.Fetch(&users); err != nil {
 	fmt.Println(err.Error())
 	return
 }
@@ -1007,11 +1007,11 @@ for _, u := range users {
 ```
 
 <a name="scan-struct"></a>
-**[`ScanStruct`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.ScanStruct)**
+**[`FetchRow`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.FetchRow)**
 
 Scans a row into a slice a struct, returns false if a row wasnt found
 
-**NOTE** [`ScanStruct`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.ScanStruct) will only select the columns that can be scanned in to the struct unless you have explicitly selected certain columns.
+**NOTE** [`FetchRow`](http://godoc.org/github.com/orn-id/depiq#SelectDataset.FetchRow) will only select the columns that can be scanned in to the struct unless you have explicitly selected certain columns.
 
 ```go
 type User struct{
@@ -1022,7 +1022,7 @@ type User struct{
 
 var user User
 // SELECT "first_name", "last_name" FROM "user" LIMIT 1;
-found, err := db.From("user").ScanStruct(&user)
+found, err := db.From("user").FetchRow(&user)
 if err != nil{
   fmt.Println(err.Error())
   return
@@ -1036,7 +1036,7 @@ if !found {
 
 `depiq` also supports scanning into multiple structs. In the example below we define a `Role` and `User` struct that could both be used individually to scan into. However, you can also create a new struct that adds both structs as fields that can be populated in a single query.
 
-**NOTE** When calling `ScanStruct` without a select already defined it will automatically only `SELECT` the columns found in the struct, omitting any that are tagged with `db:"-"`
+**NOTE** When calling `FetchRow` without a select already defined it will automatically only `SELECT` the columns found in the struct, omitting any that are tagged with `db:"-"`
 
  ```go
 type Role struct {
@@ -1059,7 +1059,7 @@ ds := db.
 	Join(depiq.T("user_role"),depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id")))).
 	Where(depiq.C("first_name").Eq("Bob"))
 
-found, err := ds.ScanStruct(&userAndRole)
+found, err := ds.FetchRow(&userAndRole)
 if err != nil{
   fmt.Println(err.Error())
   return
@@ -1099,7 +1099,7 @@ ds := db.
 	Join(depiq.T("user_role"),depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id")))).
 	Where(depiq.C("first_name").Eq("Bob"))
 
-found, err := ds.ScanStruct(&userAndRole)
+found, err := ds.FetchRow(&userAndRole)
 if err != nil{
   fmt.Println(err.Error())
   return
@@ -1126,7 +1126,7 @@ type User struct{
 
 var user User
 //SELECT "FIRSTNAME", "LASTNAME" FROM "user" LIMIT 1;
-found, err := db.From("user").ScanStruct(&user)
+found, err := db.From("user").FetchRow(&user)
 // ...
 ```
 
@@ -1142,7 +1142,7 @@ type User struct{
 
 var user User
 //SELECT "first_name" FROM "user" LIMIT 1;
-found, err := db.From("user").ScanStruct(&user)
+found, err := db.From("user").FetchRow(&user)
 // ...
 ```
 
@@ -1215,7 +1215,7 @@ defer scanner.Close()
 for scanner.Next() {
 	u := User{}
 
-	err = scanner.ScanStruct(&u)
+	err = scanner.FetchRow(&u)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
