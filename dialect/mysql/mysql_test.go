@@ -10,8 +10,8 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/dialect/mysql"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/dialect/mysql"
 	"github.com/stretchr/testify/suite"
 )
 

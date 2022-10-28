@@ -9,12 +9,12 @@ If you are upgrading from an older version please read the [Migrating Between Ve
 If using go modules.
 
 ```sh
-go get -u github.com/orn-id/depiq/v9
+go get -u github.com/orn-id/depiq
 ```
 
 If you are not using go modules...
 
-**NOTE** You should still be able to use this package if you are using go version `>v1.10` but, you will need to drop the version from the package. `import "github.com/orn-id/depiq/v9` -> `import "github.com/orn-id/depiq"`
+**NOTE** You should still be able to use this package if you are using go version `>v1.10` but, you will need to drop the version from the package. `import "github.com/orn-id/depiq` -> `import "github.com/orn-id/depiq"`
 
 ```sh
 go get -u github.com/orn-id/depiq

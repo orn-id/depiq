@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"github.com/orn-id/depiq/v9"
+	"github.com/orn-id/depiq"
 )
 
 func DialectOptions() *depiq.SQLDialectOptions {

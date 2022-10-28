@@ -1,7 +1,7 @@
 package depiq
 
 import (
-	"github.com/orn-id/depiq/v9/exp"
+	"github.com/orn-id/depiq/exp"
 )
 
 type (

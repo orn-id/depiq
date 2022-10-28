@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/exp"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/exp"
 )
 
 const schema = `

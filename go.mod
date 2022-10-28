@@ -1,4 +1,4 @@
-module github.com/orn-id/depiq/v9
+module github.com/orn-id/depiq
 
 go 1.12
 

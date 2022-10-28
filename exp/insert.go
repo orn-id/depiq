@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"sort"
 
-	"github.com/orn-id/depiq/v9/internal/errors"
-	"github.com/orn-id/depiq/v9/internal/util"
+	"github.com/orn-id/depiq/internal/errors"
+	"github.com/orn-id/depiq/internal/util"
 )
 
 type (

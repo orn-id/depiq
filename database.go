@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"sync"
 
-	"github.com/orn-id/depiq/v9/exec"
+	"github.com/orn-id/depiq/exec"
 )
 
 type (
@@ -43,8 +43,8 @@ type (
 //      import (
 //          "database/sql"
 //          "fmt"
-//          "github.com/orn-id/depiq/v9"
-//          _ "github.com/orn-id/depiq/v9/dialect/postgres"
+//          "github.com/orn-id/depiq"
+//          _ "github.com/orn-id/depiq/dialect/postgres"
 //          _ "github.com/lib/pq"
 //      )
 //

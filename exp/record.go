@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sort"
 
-	"github.com/orn-id/depiq/v9/internal/util"
+	"github.com/orn-id/depiq/internal/util"
 )
 
 // Alternative to writing map[string]interface{}. Can be used for Inserts, Updates or Deletes

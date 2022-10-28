@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/orn-id/depiq/v9/internal/util"
+	"github.com/orn-id/depiq/internal/util"
 	"github.com/stretchr/testify/suite"
 )
 

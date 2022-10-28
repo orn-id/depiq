@@ -5,8 +5,8 @@ import (
 	gsql "database/sql"
 	"reflect"
 
-	"github.com/orn-id/depiq/v9/internal/errors"
-	"github.com/orn-id/depiq/v9/internal/util"
+	"github.com/orn-id/depiq/internal/errors"
+	"github.com/orn-id/depiq/internal/util"
 )
 
 type (

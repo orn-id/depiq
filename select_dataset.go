@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/orn-id/depiq/v9/exec"
-	"github.com/orn-id/depiq/v9/exp"
-	"github.com/orn-id/depiq/v9/internal/errors"
-	"github.com/orn-id/depiq/v9/internal/sb"
+	"github.com/orn-id/depiq/exec"
+	"github.com/orn-id/depiq/exp"
+	"github.com/orn-id/depiq/internal/errors"
+	"github.com/orn-id/depiq/internal/sb"
 )
 
 // Dataset for creating and/or executing SELECT SQL statements.

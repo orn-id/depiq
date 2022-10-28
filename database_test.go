@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/internal/errors"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/internal/errors"
 	"github.com/stretchr/testify/suite"
 )
 

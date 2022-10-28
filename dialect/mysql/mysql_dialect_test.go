@@ -4,8 +4,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/exp"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/exp"
 	"github.com/stretchr/testify/suite"
 )
 

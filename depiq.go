@@ -15,8 +15,8 @@ package depiq
 import (
 	"time"
 
-	"github.com/orn-id/depiq/v9/internal/util"
-	"github.com/orn-id/depiq/v9/sqlgen"
+	"github.com/orn-id/depiq/internal/util"
+	"github.com/orn-id/depiq/sqlgen"
 )
 
 type DialectWrapper struct {

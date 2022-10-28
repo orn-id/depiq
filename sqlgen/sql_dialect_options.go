@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/orn-id/depiq/v9/exp"
+	"github.com/orn-id/depiq/exp"
 )
 
 type (

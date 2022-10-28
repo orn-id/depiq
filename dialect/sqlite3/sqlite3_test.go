@@ -7,9 +7,9 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/dialect/mysql"
-	"github.com/orn-id/depiq/v9/dialect/sqlite3"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/dialect/mysql"
+	"github.com/orn-id/depiq/dialect/sqlite3"
 
 	"github.com/stretchr/testify/suite"
 )

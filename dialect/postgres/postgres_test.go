@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/orn-id/depiq/v9"
+	"github.com/orn-id/depiq"
 	"github.com/stretchr/testify/suite"
 )
 

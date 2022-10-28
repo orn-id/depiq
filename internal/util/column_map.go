@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/orn-id/depiq/v9/internal/tag"
+	"github.com/orn-id/depiq/internal/tag"
 )
 
 type (

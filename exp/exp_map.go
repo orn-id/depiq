@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/orn-id/depiq/v9/internal/errors"
+	"github.com/orn-id/depiq/internal/errors"
 )
 
 type (

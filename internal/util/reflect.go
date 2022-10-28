@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/orn-id/depiq/v9/internal/errors"
+	"github.com/orn-id/depiq/internal/errors"
 )
 
 const (

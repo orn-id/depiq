@@ -4,8 +4,8 @@ package depiq_test
 import (
 	"fmt"
 
-	"github.com/orn-id/depiq/v9"
-	_ "github.com/orn-id/depiq/v9/dialect/mysql"
+	"github.com/orn-id/depiq"
+	_ "github.com/orn-id/depiq/dialect/mysql"
 )
 
 func ExampleUpdate_withStruct() {

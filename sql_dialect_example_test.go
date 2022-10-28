@@ -3,7 +3,7 @@ package depiq_test
 import (
 	"fmt"
 
-	"github.com/orn-id/depiq/v9"
+	"github.com/orn-id/depiq"
 )
 
 func ExampleRegisterDialect() {

@@ -3,7 +3,7 @@ package sqlgen_test
 import (
 	"testing"
 
-	"github.com/orn-id/depiq/v9/sqlgen"
+	"github.com/orn-id/depiq/sqlgen"
 	"github.com/stretchr/testify/suite"
 )
 

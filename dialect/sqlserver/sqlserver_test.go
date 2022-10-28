@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/dialect/mysql"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/dialect/mysql"
 
 	_ "github.com/denisenkom/go-mssqldb"
-	_ "github.com/orn-id/depiq/v9/dialect/sqlserver"
+	_ "github.com/orn-id/depiq/dialect/sqlserver"
 	"github.com/stretchr/testify/suite"
 )
 

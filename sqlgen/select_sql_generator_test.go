@@ -3,11 +3,11 @@ package sqlgen_test
 import (
 	"testing"
 
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/exp"
-	"github.com/orn-id/depiq/v9/internal/errors"
-	"github.com/orn-id/depiq/v9/internal/sb"
-	"github.com/orn-id/depiq/v9/sqlgen"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/exp"
+	"github.com/orn-id/depiq/internal/errors"
+	"github.com/orn-id/depiq/internal/sb"
+	"github.com/orn-id/depiq/sqlgen"
 	"github.com/stretchr/testify/suite"
 )
 

@@ -5,15 +5,15 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/orn-id/depiq/v9"
-	_ "github.com/orn-id/depiq/v9/dialect/mysql"
-	_ "github.com/orn-id/depiq/v9/dialect/postgres"
-	_ "github.com/orn-id/depiq/v9/dialect/sqlite3"
+	"github.com/orn-id/depiq"
+	_ "github.com/orn-id/depiq/dialect/mysql"
+	_ "github.com/orn-id/depiq/dialect/postgres"
+	_ "github.com/orn-id/depiq/dialect/sqlite3"
 )
 
 // Creating a mysql dataset. Be sure to import the mysql adapter.
 func ExampleDialect_datasetMysql() {
-	// import _ "github.com/orn-id/depiq/v9/dialect/mysql"
+	// import _ "github.com/orn-id/depiq/dialect/mysql"
 
 	d := depiq.Dialect("mysql")
 	ds := d.From("test").Where(depiq.Ex{
@@ -34,7 +34,7 @@ func ExampleDialect_datasetMysql() {
 
 // Creating a mysql database. Be sure to import the mysql adapter.
 func ExampleDialect_dbMysql() {
-	// import _ "github.com/orn-id/depiq/v9/dialect/mysql"
+	// import _ "github.com/orn-id/depiq/dialect/mysql"
 
 	type item struct {
 		ID      int64  `db:"id"`
@@ -84,7 +84,7 @@ func ExampleDialect_dbMysql() {
 
 // Creating a mysql dataset. Be sure to import the postgres adapter
 func ExampleDialect_datasetPostgres() {
-	// import _ "github.com/orn-id/depiq/v9/dialect/postgres"
+	// import _ "github.com/orn-id/depiq/dialect/postgres"
 
 	d := depiq.Dialect("postgres")
 	ds := d.From("test").Where(depiq.Ex{
@@ -105,7 +105,7 @@ func ExampleDialect_datasetPostgres() {
 
 // Creating a postgres dataset. Be sure to import the postgres adapter
 func ExampleDialect_dbPostgres() {
-	// import _ "github.com/orn-id/depiq/v9/dialect/postgres"
+	// import _ "github.com/orn-id/depiq/dialect/postgres"
 
 	type item struct {
 		ID      int64  `db:"id"`
@@ -155,7 +155,7 @@ func ExampleDialect_dbPostgres() {
 
 // Creating a mysql dataset. Be sure to import the sqlite3 adapter
 func ExampleDialect_datasetSqlite3() {
-	// import _ "github.com/orn-id/depiq/v9/dialect/sqlite3"
+	// import _ "github.com/orn-id/depiq/dialect/sqlite3"
 
 	d := depiq.Dialect("sqlite3")
 	ds := d.From("test").Where(depiq.Ex{
@@ -176,7 +176,7 @@ func ExampleDialect_datasetSqlite3() {
 
 // Creating a sqlite3 database. Be sure to import the sqlite3 adapter
 func ExampleDialect_dbSqlite3() {
-	// import _ "github.com/orn-id/depiq/v9/dialect/sqlite3"
+	// import _ "github.com/orn-id/depiq/dialect/sqlite3"
 	type item struct {
 		ID      int64  `db:"id"`
 		Address string `db:"address"`

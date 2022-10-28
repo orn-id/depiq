@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/orn-id/depiq/v9"
+	"github.com/orn-id/depiq"
 )
 
 func ExampleDatabase_Begin() {

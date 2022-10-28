@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/exp"
-	"github.com/orn-id/depiq/v9/internal/errors"
-	"github.com/orn-id/depiq/v9/internal/sb"
-	"github.com/orn-id/depiq/v9/mocks"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/exp"
+	"github.com/orn-id/depiq/internal/errors"
+	"github.com/orn-id/depiq/internal/sb"
+	"github.com/orn-id/depiq/mocks"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )

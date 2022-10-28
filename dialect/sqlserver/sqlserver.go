@@ -1,9 +1,9 @@
 package sqlserver
 
 import (
-	"github.com/orn-id/depiq/v9"
-	"github.com/orn-id/depiq/v9/exp"
-	"github.com/orn-id/depiq/v9/sqlgen"
+	"github.com/orn-id/depiq"
+	"github.com/orn-id/depiq/exp"
+	"github.com/orn-id/depiq/sqlgen"
 )
 
 func DialectOptions() *depiq.SQLDialectOptions {

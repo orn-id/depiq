@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/orn-id/depiq/v9/internal/util"
+	"github.com/orn-id/depiq/internal/util"
 )
 
 type columnList struct {

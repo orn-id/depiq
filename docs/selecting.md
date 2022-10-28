@@ -49,7 +49,7 @@ SELECT NOW()
 Use this when you want to create SQL for a specific `dialect`
 
 ```go
-// import _ "github.com/orn-id/depiq/v9/dialect/mysql"
+// import _ "github.com/orn-id/depiq/dialect/mysql"
 
 dialect := depiq.Dialect("mysql")
 
@@ -70,7 +70,7 @@ SELECT NOW()
 Use this when you want to execute the SQL or create SQL for the drivers dialect.
 
 ```go
-// import _ "github.com/orn-id/depiq/v9/dialect/mysql"
+// import _ "github.com/orn-id/depiq/dialect/mysql"
 
 mysqlDB := //initialize your db
 db := depiq.New("mysql", mysqlDB)

@@ -2,10 +2,10 @@
 
 Dialects allow depiq the build the correct SQL for each database. There are four dialects that come packaged with `depiq`
 
-* [mysql](./dialect/mysql/mysql.go) - `import _ "github.com/orn-id/depiq/v9/dialect/mysql"`
-* [postgres](./dialect/postgres/postgres.go) - `import _ "github.com/orn-id/depiq/v9/dialect/postgres"`
-* [sqlite3](./dialect/sqlite3/sqlite3.go) - `import _ "github.com/orn-id/depiq/v9/dialect/sqlite3"`
-* [sqlserver](./dialect/sqlserver/sqlserver.go) - `import _ "github.com/orn-id/depiq/v9/dialect/sqlserver"`
+* [mysql](./dialect/mysql/mysql.go) - `import _ "github.com/orn-id/depiq/dialect/mysql"`
+* [postgres](./dialect/postgres/postgres.go) - `import _ "github.com/orn-id/depiq/dialect/postgres"`
+* [sqlite3](./dialect/sqlite3/sqlite3.go) - `import _ "github.com/orn-id/depiq/dialect/sqlite3"`
+* [sqlserver](./dialect/sqlserver/sqlserver.go) - `import _ "github.com/orn-id/depiq/dialect/sqlserver"`
 
 **NOTE** Dialects work like drivers in go where they are not registered until you import the package.
 
@@ -16,9 +16,9 @@ Below are examples for each dialect. Notice how the dialect is imported and then
 ```go
 import (
   "fmt"
-  "github.com/orn-id/depiq/v9"
+  "github.com/orn-id/depiq"
   // import the dialect
-  _ "github.com/orn-id/depiq/v9/dialect/postgres"
+  _ "github.com/orn-id/depiq/dialect/postgres"
 )
 
 // look up the dialect
@@ -44,9 +44,9 @@ SELECT * FROM "test" WHERE "id" = 10 []
 ```go
 import (
   "fmt"
-  "github.com/orn-id/depiq/v9"
+  "github.com/orn-id/depiq"
   // import the dialect
-  _ "github.com/orn-id/depiq/v9/dialect/mysql"
+  _ "github.com/orn-id/depiq/dialect/mysql"
 )
 
 // look up the dialect
@@ -72,9 +72,9 @@ SELECT * FROM `test` WHERE `id` = 10 []
 ```go
 import (
   "fmt"
-  "github.com/orn-id/depiq/v9"
+  "github.com/orn-id/depiq"
   // import the dialect
-  _ "github.com/orn-id/depiq/v9/dialect/sqlite3"
+  _ "github.com/orn-id/depiq/dialect/sqlite3"
 )
 
 // look up the dialect
@@ -100,9 +100,9 @@ SELECT * FROM `test` WHERE `id` = 10 []
 ```go
 import (
   "fmt"
-  "github.com/orn-id/depiq/v9"
+  "github.com/orn-id/depiq"
   // import the dialect
-  _ "github.com/orn-id/depiq/v9/dialect/sqlserver"
+  _ "github.com/orn-id/depiq/dialect/sqlserver"
 )
 
 // look up the dialect
@@ -132,8 +132,8 @@ In the example below notice that we imported the dialect and driver for side eff
 ```go
 import (
   "database/sql"
-  "github.com/orn-id/depiq/v9"
-  _ "github.com/orn-id/depiq/v9/dialect/postgres"
+  "github.com/orn-id/depiq"
+  _ "github.com/orn-id/depiq/dialect/postgres"
   _ "github.com/lib/pq"
 )
 
