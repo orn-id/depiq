@@ -1218,28 +1218,28 @@ func (sds *selectDatasetSuite) TestScanStructs() {
 
 	db := depiq.New("mock", mDB)
 	var items []dsTestActionItem
-	sds.NoError(db.From("items").ScanStructs(&items))
+	sds.NoError(db.From("items").Fetch(&items))
 	sds.Equal([]dsTestActionItem{
 		{Address: "111 Test Addr", Name: "Test1"},
 		{Address: "211 Test Addr", Name: "Test2"},
 	}, items)
 
 	items = items[0:0]
-	sds.NoError(db.From("items").Select("name").Distinct().ScanStructs(&items))
+	sds.NoError(db.From("items").Select("name").Distinct().Fetch(&items))
 	sds.Equal([]dsTestActionItem{
 		{Address: "111 Test Addr", Name: "Test1"},
 		{Address: "211 Test Addr", Name: "Test2"},
 	}, items)
 
 	items = items[0:0]
-	sds.EqualError(db.From("items").ScanStructs(items),
+	sds.EqualError(db.From("items").Fetch(items),
 		"goqu: type must be a pointer to a slice when scanning into structs")
-	sds.EqualError(db.From("items").ScanStructs(&dsTestActionItem{}),
+	sds.EqualError(db.From("items").Fetch(&dsTestActionItem{}),
 		"goqu: type must be a pointer to a slice when scanning into structs")
-	sds.EqualError(db.From("items").Select("test").ScanStructs(&items),
+	sds.EqualError(db.From("items").Select("test").Fetch(&items),
 		`goqu: unable to find corresponding field to column "test" returned by query`)
 
-	sds.Equal(depiq.ErrQueryFactoryNotFoundError, depiq.From("items").ScanStructs(items))
+	sds.Equal(depiq.ErrQueryFactoryNotFoundError, depiq.From("items").Fetch(items))
 }
 
 func (sds *selectDatasetSuite) TestScanStructs_WithPreparedStatements() {
@@ -1270,22 +1270,22 @@ func (sds *selectDatasetSuite) TestScanStructs_WithPreparedStatements() {
 	sds.NoError(db.From("items").Prepared(true).Where(depiq.Ex{
 		"name":    []string{"Bob", "Sally", "Billy"},
 		"address": "111 Test Addr",
-	}).ScanStructs(&items))
+	}).Fetch(&items))
 	sds.Equal(items, []dsTestActionItem{
 		{Address: "111 Test Addr", Name: "Test1"},
 		{Address: "211 Test Addr", Name: "Test2"},
 	})
 
 	items = items[0:0]
-	sds.EqualError(db.From("items").ScanStructs(items),
+	sds.EqualError(db.From("items").Fetch(items),
 		"goqu: type must be a pointer to a slice when scanning into structs")
-	sds.EqualError(db.From("items").ScanStructs(&dsTestActionItem{}),
+	sds.EqualError(db.From("items").Fetch(&dsTestActionItem{}),
 		"goqu: type must be a pointer to a slice when scanning into structs")
 	sds.EqualError(db.From("items").
 		Prepared(true).
 		Select("test").
 		Where(depiq.Ex{"name": []string{"Bob", "Sally", "Billy"}, "address": "111 Test Addr"}).
-		ScanStructs(&items), `goqu: unable to find corresponding field to column "test" returned by query`)
+		Fetch(&items), `goqu: unable to find corresponding field to column "test" returned by query`)
 }
 
 func (sds *selectDatasetSuite) TestScanStruct() {
@@ -1305,27 +1305,27 @@ func (sds *selectDatasetSuite) TestScanStruct() {
 
 	db := depiq.New("mock", mDB)
 	var item dsTestActionItem
-	found, err := db.From("items").ScanStruct(&item)
+	found, err := db.From("items").FecthRow(&item)
 	sds.NoError(err)
 	sds.True(found)
 	sds.Equal("111 Test Addr", item.Address)
 	sds.Equal("Test1", item.Name)
 
 	item = dsTestActionItem{}
-	found, err = db.From("items").Select("name").Distinct().ScanStruct(&item)
+	found, err = db.From("items").Select("name").Distinct().FecthRow(&item)
 	sds.NoError(err)
 	sds.True(found)
 	sds.Equal("111 Test Addr", item.Address)
 	sds.Equal("Test1", item.Name)
 
-	_, err = db.From("items").ScanStruct(item)
+	_, err = db.From("items").FecthRow(item)
 	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
-	_, err = db.From("items").ScanStruct([]dsTestActionItem{})
+	_, err = db.From("items").FecthRow([]dsTestActionItem{})
 	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
-	_, err = db.From("items").Select("test").ScanStruct(&item)
+	_, err = db.From("items").Select("test").FecthRow(&item)
 	sds.EqualError(err, `goqu: unable to find corresponding field to column "test" returned by query`)
 
-	_, err = depiq.From("items").ScanStruct(item)
+	_, err = depiq.From("items").FecthRow(item)
 	sds.Equal(depiq.ErrQueryFactoryNotFoundError, err)
 }
 
@@ -1347,21 +1347,21 @@ func (sds *selectDatasetSuite) TestScanStruct_WithPreparedStatements() {
 	found, err := db.From("items").Prepared(true).Where(depiq.Ex{
 		"name":    []string{"Bob", "Sally", "Billy"},
 		"address": "111 Test Addr",
-	}).ScanStruct(&item)
+	}).FecthRow(&item)
 	sds.NoError(err)
 	sds.True(found)
 	sds.Equal("111 Test Addr", item.Address)
 	sds.Equal("Test1", item.Name)
 
-	_, err = db.From("items").ScanStruct(item)
+	_, err = db.From("items").FecthRow(item)
 	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
-	_, err = db.From("items").ScanStruct([]dsTestActionItem{})
+	_, err = db.From("items").FecthRow([]dsTestActionItem{})
 	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.From("items").
 		Prepared(true).
 		Select("test").
 		Where(depiq.Ex{"name": []string{"Bob", "Sally", "Billy"}, "address": "111 Test Addr"}).
-		ScanStruct(&item)
+		FecthRow(&item)
 	sds.EqualError(err, `goqu: unable to find corresponding field to column "test" returned by query`)
 }
 
@@ -1381,7 +1381,7 @@ func (sds *selectDatasetSuite) TestScanStructUntagged() {
 	db := depiq.New("mock", mDB)
 	var item dsUntaggedTestActionItem
 
-	found, err := db.From("items").ScanStruct(&item)
+	found, err := db.From("items").FecthRow(&item)
 	sds.NoError(err)
 	sds.True(found)
 	sds.Equal("111 Test Addr", item.Address)
@@ -1392,7 +1392,7 @@ func (sds *selectDatasetSuite) TestScanStructUntagged() {
 	depiq.SetIgnoreUntaggedFields(true)
 
 	item = dsUntaggedTestActionItem{}
-	found, err = db.From("items").ScanStruct(&item)
+	found, err = db.From("items").FecthRow(&item)
 	sds.NoError(err)
 	sds.True(found)
 	sds.Equal("111 Test Addr", item.Address)

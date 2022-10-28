@@ -63,7 +63,7 @@ func ExampleDialect_dbMysql() {
 				FromCSVString("1, 111 Test Addr,Test1"),
 		)
 	var it item
-	found, err := ds.ScanStruct(&it)
+	found, err := ds.FecthRow(&it)
 	fmt.Println(it, found, err)
 
 	// set up mock for example purposes
@@ -74,7 +74,7 @@ func ExampleDialect_dbMysql() {
 				FromCSVString("1, 111 Test Addr,Test1"),
 		)
 
-	found, err = ds.Prepared(true).ScanStruct(&it)
+	found, err = ds.Prepared(true).FecthRow(&it)
 	fmt.Println(it, found, err)
 
 	// Output:
@@ -134,7 +134,7 @@ func ExampleDialect_dbPostgres() {
 				FromCSVString("1, 111 Test Addr,Test1"),
 		)
 	var it item
-	found, err := ds.ScanStruct(&it)
+	found, err := ds.FecthRow(&it)
 	fmt.Println(it, found, err)
 
 	// set up mock for example purposes
@@ -145,7 +145,7 @@ func ExampleDialect_dbPostgres() {
 				FromCSVString("1, 111 Test Addr,Test1"),
 		)
 
-	found, err = ds.Prepared(true).ScanStruct(&it)
+	found, err = ds.Prepared(true).FecthRow(&it)
 	fmt.Println(it, found, err)
 
 	// Output:
@@ -204,7 +204,7 @@ func ExampleDialect_dbSqlite3() {
 				FromCSVString("1, 111 Test Addr,Test1"),
 		)
 	var it item
-	found, err := ds.ScanStruct(&it)
+	found, err := ds.FecthRow(&it)
 	fmt.Println(it, found, err)
 
 	// set up mock for example purposes
@@ -215,7 +215,7 @@ func ExampleDialect_dbSqlite3() {
 				FromCSVString("1, 111 Test Addr,Test1"),
 		)
 
-	found, err = ds.Prepared(true).ScanStruct(&it)
+	found, err = ds.Prepared(true).FecthRow(&it)
 	fmt.Println(it, found, err)
 
 	// Output:

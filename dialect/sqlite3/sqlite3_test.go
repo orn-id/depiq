@@ -90,7 +90,7 @@ func (st *sqlite3Suite) assertSQL(cases ...sqlTestCase) {
 func (st *sqlite3Suite) assertEntries(cases ...entryTestCase) {
 	for i, c := range cases {
 		var entries []entry
-		err := c.ds.ScanStructs(&entries)
+		err := c.ds.Fetch(&entries)
 		if c.err == "" {
 			st.NoError(err, "test case %d failed", i)
 		} else {
@@ -259,7 +259,7 @@ func (st *sqlite3Suite) TestQuery_ValueExpressions() {
 	st.NoError(err)
 	ds := st.db.From("entry").Select(depiq.Star(), depiq.V(true).As("bool_value")).Where(depiq.Ex{"int": 1})
 	var we wrappedEntry
-	found, err := ds.ScanStruct(&we)
+	found, err := ds.FecthRow(&we)
 	st.NoError(err)
 	st.True(found)
 	st.Equal(we, wrappedEntry{
@@ -295,7 +295,7 @@ func (st *sqlite3Suite) TestInsert() {
 	st.NoError(err)
 
 	var insertedEntry entry
-	found, err := ds.Where(depiq.C("int").Eq(10)).ScanStruct(&insertedEntry)
+	found, err := ds.Where(depiq.C("int").Eq(10)).FecthRow(&insertedEntry)
 	st.NoError(err)
 	st.True(found)
 	st.True(insertedEntry.ID > 0)
@@ -311,7 +311,7 @@ func (st *sqlite3Suite) TestInsert() {
 	st.NoError(err)
 
 	var newEntries []entry
-	st.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).ScanStructs(&newEntries))
+	st.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).Fetch(&newEntries))
 	for i, e := range newEntries {
 		st.Equal(entries[i].Int, e.Int)
 		st.Equal(entries[i].Float, e.Float)
@@ -331,7 +331,7 @@ func (st *sqlite3Suite) TestInsert() {
 	st.NoError(err)
 
 	newEntries = newEntries[0:0]
-	st.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).ScanStructs(&newEntries))
+	st.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).Fetch(&newEntries))
 	st.Len(newEntries, 5)
 }
 
@@ -346,7 +346,7 @@ func (st *sqlite3Suite) TestInsert_returning() {
 func (st *sqlite3Suite) TestUpdate() {
 	ds := st.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	st.NoError(err)
 	st.True(found)
 	e.Int = 11
@@ -374,7 +374,7 @@ func (st *sqlite3Suite) TestUpdateReturning() {
 func (st *sqlite3Suite) TestDelete() {
 	ds := st.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	st.NoError(err)
 	st.True(found)
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Executor().Exec()
@@ -390,7 +390,7 @@ func (st *sqlite3Suite) TestDelete() {
 	st.False(found)
 
 	e = entry{}
-	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").ScanStruct(&e)
+	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").FecthRow(&e)
 	st.NoError(err)
 	st.True(found)
 	st.NotEqual(int64(0), e.ID)
@@ -410,7 +410,7 @@ func (st *sqlite3Suite) TestInsert_OnConflict() {
 	st.NoError(err)
 
 	var entryActual entry
-	_, err = ds.Where(depiq.C("id").Eq(11)).ScanStruct(&entryActual)
+	_, err = ds.Where(depiq.C("id").Eq(11)).FecthRow(&entryActual)
 	st.NoError(err)
 	st.Equal("1.100000", entryActual.String)
 
@@ -428,7 +428,7 @@ func (st *sqlite3Suite) TestInsert_OnConflict() {
 	).OnConflict(depiq.DoNothing()).Executor().Exec()
 	st.NoError(err)
 
-	_, err = ds.Where(depiq.C("id").Eq(11)).ScanStruct(&entryActual)
+	_, err = ds.Where(depiq.C("id").Eq(11)).FecthRow(&entryActual)
 	st.NoError(err)
 	st.Equal("1.100000", entryActual.String)
 
@@ -446,7 +446,7 @@ func (st *sqlite3Suite) TestInsert_OnConflict() {
 	).OnConflict(depiq.DoUpdate("id", depiq.Record{"string": "upsert"})).Executor().Exec()
 	st.NoError(err)
 
-	_, err = ds.Where(depiq.C("id").Eq(11)).ScanStruct(&entryActual)
+	_, err = ds.Where(depiq.C("id").Eq(11)).FecthRow(&entryActual)
 	st.NoError(err)
 	st.Equal("upsert", entryActual.String)
 
