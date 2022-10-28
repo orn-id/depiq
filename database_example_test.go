@@ -18,7 +18,7 @@ func ExampleDatabase_Begin() {
 	}
 
 	// use tx.From to get a dataset that will execute within this transaction
-	update := tx.Update("goqu_user").
+	update := tx.Update("depiq_user").
 		Set(depiq.Record{"last_name": "Ucon"}).
 		Where(depiq.Ex{"last_name": "Yukon"}).
 		Returning("id").
@@ -52,7 +52,7 @@ func ExampleDatabase_BeginTx() {
 	}
 
 	// use tx.From to get a dataset that will execute within this transaction
-	update := tx.Update("goqu_user").
+	update := tx.Update("depiq_user").
 		Set(depiq.Record{"last_name": "Ucon"}).
 		Where(depiq.Ex{"last_name": "Yukon"}).
 		Returning("id").
@@ -81,7 +81,7 @@ func ExampleDatabase_WithTx() {
 	var ids []int64
 	if err := db.WithTx(func(tx *depiq.TxDatabase) error {
 		// use tx.From to get a dataset that will execute within this transaction
-		update := tx.Update("goqu_user").
+		update := tx.Update("depiq_user").
 			Where(depiq.Ex{"last_name": "Yukon"}).
 			Returning("id").
 			Set(depiq.Record{"last_name": "Ucon"}).
@@ -109,13 +109,13 @@ func ExampleDatabase_Dialect() {
 func ExampleDatabase_Exec() {
 	db := getDB()
 
-	_, err := db.Exec(`DROP TABLE "user_role"; DROP TABLE "goqu_user"`)
+	_, err := db.Exec(`DROP TABLE "user_role"; DROP TABLE "depiq_user"`)
 	if err != nil {
 		fmt.Println("Error occurred while dropping tables", err.Error())
 	}
-	fmt.Println("Dropped tables user_role and goqu_user")
+	fmt.Println("Dropped tables user_role and depiq_user")
 	// Output:
-	// Dropped tables user_role and goqu_user
+	// Dropped tables user_role and depiq_user
 }
 
 func ExampleDatabase_ExecContext() {
@@ -123,20 +123,20 @@ func ExampleDatabase_ExecContext() {
 	d := time.Now().Add(50 * time.Millisecond)
 	ctx, cancel := context.WithDeadline(context.Background(), d)
 	defer cancel()
-	_, err := db.ExecContext(ctx, `DROP TABLE "user_role"; DROP TABLE "goqu_user"`)
+	_, err := db.ExecContext(ctx, `DROP TABLE "user_role"; DROP TABLE "depiq_user"`)
 	if err != nil {
 		fmt.Println("Error occurred while dropping tables", err.Error())
 	}
-	fmt.Println("Dropped tables user_role and goqu_user")
+	fmt.Println("Dropped tables user_role and depiq_user")
 	// Output:
-	// Dropped tables user_role and goqu_user
+	// Dropped tables user_role and depiq_user
 }
 
 func ExampleDatabase_From() {
 	db := getDB()
 	var names []string
 
-	if err := db.From("goqu_user").Select("first_name").ScanVals(&names); err != nil {
+	if err := db.From("depiq_user").Select("first_name").ScanVals(&names); err != nil {
 		fmt.Println(err.Error())
 	} else {
 		fmt.Println("Fetched Users names:", names)

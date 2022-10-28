@@ -39,7 +39,7 @@ const (
 		"(9, 0.900000, '0.900000', '2015-02-23 03:19:55', FALSE, '0.900000');"
 )
 
-const defaultDBURI = "root@/goqumysql?parseTime=true"
+const defaultDBURI = "root@/depiqmysql?parseTime=true"
 
 type (
 	mysqlTest struct {
@@ -47,7 +47,7 @@ type (
 		db *depiq.Database
 	}
 	entry struct {
-		ID     uint32    `db:"id" goqu:"skipinsert,skipupdate"`
+		ID     uint32    `db:"id" depiq:"skipinsert,skipupdate"`
 		Int    int       `db:"int"`
 		Float  float64   `db:"float"`
 		String string    `db:"string"`
@@ -356,7 +356,7 @@ func (mt *mysqlTest) TestUpdateReturning() {
 		Returning("id").
 		Executor().ScanVal(&id)
 	mt.Error(err)
-	mt.EqualError(err, "goqu: dialect does not support RETURNING clause [dialect=mysql]")
+	mt.EqualError(err, "depiq: dialect does not support RETURNING clause [dialect=mysql]")
 }
 
 func (mt *mysqlTest) TestDelete() {
@@ -385,7 +385,7 @@ func (mt *mysqlTest) TestDelete() {
 
 	id = 0
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Returning("id").Executor().ScanVal(&id)
-	mt.EqualError(err, "goqu: dialect does not support RETURNING clause [dialect=mysql]")
+	mt.EqualError(err, "depiq: dialect does not support RETURNING clause [dialect=mysql]")
 }
 
 func (mt *mysqlTest) TestInsertIgnore() {
@@ -441,7 +441,7 @@ func (mt *mysqlTest) TestInsert_OnConflict() {
 		Rows(entries).
 		OnConflict(depiq.DoUpdate("int", depiq.Record{"string": "upsert"}).Where(depiq.C("int").Eq(9))).
 		Executor().Exec()
-	mt.EqualError(err, "goqu: dialect does not support upsert with where clause [dialect=mysql]")
+	mt.EqualError(err, "depiq: dialect does not support upsert with where clause [dialect=mysql]")
 }
 
 func (mt *mysqlTest) TestWindowFunction() {
@@ -480,7 +480,7 @@ func (mt *mysqlTest) TestWindowFunction() {
 		{Int: 0, ID: 10},
 	}, entries)
 
-	mt.Error(ds.WithDialect("mysql").Fetch(&entries), "goqu: adapter does not support window function clause")
+	mt.Error(ds.WithDialect("mysql").Fetch(&entries), "depiq: adapter does not support window function clause")
 }
 
 func (mt *mysqlTest) TestInsertFromSelect() {

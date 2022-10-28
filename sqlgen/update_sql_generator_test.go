@@ -54,7 +54,7 @@ func (usgs *updateSQLGeneratorSuite) TestGenerate_unsupportedFragment() {
 	uc := exp.NewUpdateClauses().
 		SetTable(exp.NewIdentifierExpression("", "test", "")).
 		SetSetValues(exp.Record{"a": "b", "b": "c"})
-	expectedErr := "goqu: unsupported UPDATE SQL fragment InsertBeingSQLFragment"
+	expectedErr := "depiq: unsupported UPDATE SQL fragment InsertBeingSQLFragment"
 	usgs.assertCases(
 		sqlgen.NewUpdateSQLGenerator("test", opts),
 		updateTestCase{clause: uc, err: expectedErr},
@@ -76,7 +76,7 @@ func (usgs *updateSQLGeneratorSuite) TestGenerate_withBadUpdateValues() {
 		SetTable(exp.NewIdentifierExpression("", "test", "")).
 		SetSetValues(true)
 
-	expectedErr := "goqu: unsupported update interface type bool"
+	expectedErr := "depiq: unsupported update interface type bool"
 	usgs.assertCases(
 		sqlgen.NewUpdateSQLGenerator("test", sqlgen.DefaultDialectOptions()),
 		updateTestCase{clause: uc, err: expectedErr},
@@ -129,7 +129,7 @@ func (usgs *updateSQLGeneratorSuite) TestGenerate_withFrom() {
 
 	opts = sqlgen.DefaultDialectOptions()
 	opts.SupportsMultipleUpdateTables = false
-	expectedErr := "goqu: test dialect does not support multiple tables in UPDATE"
+	expectedErr := "depiq: test dialect does not support multiple tables in UPDATE"
 	usgs.assertCases(
 		sqlgen.NewUpdateSQLGenerator("test", opts),
 		updateTestCase{clause: uc, err: expectedErr},

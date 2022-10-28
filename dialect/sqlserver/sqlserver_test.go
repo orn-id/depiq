@@ -47,7 +47,7 @@ type (
 		db *depiq.Database
 	}
 	entry struct {
-		ID     uint32    `db:"id" goqu:"skipinsert,skipupdate"`
+		ID     uint32    `db:"id" depiq:"skipinsert,skipupdate"`
 		Int    int       `db:"int"`
 		Float  float64   `db:"float"`
 		String string    `db:"string"`
@@ -141,7 +141,7 @@ func (sst *sqlserverTest) TestQuery() {
 		}},
 		entryTestCase{
 			ds:  ds.Where(depiq.C("bool").IsTrue()).Order(depiq.C("id").Asc()),
-			err: "goqu: boolean data type is not supported by dialect \"sqlserver\"",
+			err: "depiq: boolean data type is not supported by dialect \"sqlserver\"",
 		},
 		entryTestCase{ds: ds.Where(depiq.C("int").Gt(4)).Order(depiq.C("id").Asc()), len: 5, check: func(entry entry, _ int) {
 			sst.True(entry.Int > 4)
@@ -196,7 +196,7 @@ func (sst *sqlserverTest) TestQuery_Prepared() {
 		}},
 		entryTestCase{
 			ds:  ds.Where(depiq.C("bool").IsTrue()).Order(depiq.C("id").Asc()),
-			err: "goqu: boolean data type is not supported by dialect \"sqlserver\"",
+			err: "depiq: boolean data type is not supported by dialect \"sqlserver\"",
 		},
 		entryTestCase{ds: ds.Where(depiq.C("int").Gt(4)).Order(depiq.C("id").Asc()), len: 5, check: func(entry entry, _ int) {
 			sst.True(entry.Int > 4)
@@ -420,7 +420,7 @@ func (sst *sqlserverTest) TestUpdateReturning() {
 		Returning("id").
 		Executor().ScanVal(&id)
 	sst.Error(err)
-	sst.EqualError(err, "goqu: dialect does not support RETURNING clause [dialect=sqlserver]")
+	sst.EqualError(err, "depiq: dialect does not support RETURNING clause [dialect=sqlserver]")
 }
 
 func (sst *sqlserverTest) TestDelete() {
@@ -449,7 +449,7 @@ func (sst *sqlserverTest) TestDelete() {
 
 	id = 0
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Returning("id").Executor().ScanVal(&id)
-	sst.EqualError(err, "goqu: dialect does not support RETURNING clause [dialect=sqlserver]")
+	sst.EqualError(err, "depiq: dialect does not support RETURNING clause [dialect=sqlserver]")
 }
 
 func (sst *sqlserverTest) TestInsertIgnoreNotSupported() {

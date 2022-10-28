@@ -46,7 +46,7 @@ type (
 		db *depiq.Database
 	}
 	entry struct {
-		ID     uint32    `db:"id" goqu:"skipinsert,skipupdate"`
+		ID     uint32    `db:"id" depiq:"skipinsert,skipupdate"`
 		Int    int       `db:"int"`
 		Float  float64   `db:"float"`
 		String string    `db:"string"`
@@ -368,7 +368,7 @@ func (st *sqlite3Suite) TestUpdateReturning() {
 		Returning("id").
 		Executor().ScanVal(&id)
 	st.Error(err)
-	st.EqualError(err, "goqu: dialect does not support RETURNING clause [dialect=sqlite3]")
+	st.EqualError(err, "depiq: dialect does not support RETURNING clause [dialect=sqlite3]")
 }
 
 func (st *sqlite3Suite) TestDelete() {
@@ -397,7 +397,7 @@ func (st *sqlite3Suite) TestDelete() {
 
 	id = 0
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Returning("id").Executor().ScanVal(&id)
-	st.EqualError(err, "goqu: dialect does not support RETURNING clause [dialect=sqlite3]")
+	st.EqualError(err, "depiq: dialect does not support RETURNING clause [dialect=sqlite3]")
 }
 
 func (st *sqlite3Suite) TestInsert_OnConflict() {
@@ -459,7 +459,7 @@ func (st *sqlite3Suite) TestInsert_OnConflict() {
 		Rows(entries).
 		OnConflict(depiq.DoUpdate("id", depiq.Record{"string": "upsert"}).Where(depiq.C("id").Eq(9))).
 		Executor().Exec()
-	st.EqualError(err, "goqu: dialect does not support upsert with where clause [dialect=sqlite3]")
+	st.EqualError(err, "depiq: dialect does not support upsert with where clause [dialect=sqlite3]")
 }
 
 func TestSqlite3Suite(t *testing.T) {

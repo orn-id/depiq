@@ -127,8 +127,8 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_UnsupportedType() {
 	type strct struct{}
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", sqlgen.DefaultDialectOptions()),
-		expressionTestCase{val: strct{}, err: "goqu_encode_error: Unable to encode value {}"},
-		expressionTestCase{val: strct{}, err: "goqu_encode_error: Unable to encode value {}", isPrepared: true},
+		expressionTestCase{val: strct{}, err: "depiq_encode_error: Unable to encode value {}"},
+		expressionTestCase{val: strct{}, err: "depiq_encode_error: Unable to encode value {}", isPrepared: true},
 	)
 }
 
@@ -307,9 +307,9 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_Valuer() {
 			val: datasetValuerType{int: 10}, sql: "?", isPrepared: true, args: []interface{}{[]byte("Hello World 10")},
 		},
 
-		expressionTestCase{val: datasetValuerType{err: err}, err: "goqu: valuer error"},
+		expressionTestCase{val: datasetValuerType{err: err}, err: "depiq: valuer error"},
 		expressionTestCase{
-			val: datasetValuerType{err: err}, isPrepared: true, err: "goqu: valuer error",
+			val: datasetValuerType{err: err}, isPrepared: true, err: "depiq: valuer error",
 		},
 		expressionTestCase{
 			val: val, sql: "NULL",
@@ -343,7 +343,7 @@ func (ue unknownExpression) Clone() exp.Expression {
 }
 
 func (esgs *expressionSQLGeneratorSuite) TestGenerateUnsupportedExpression() {
-	errMsg := "goqu: unsupported expression type sqlgen_test.unknownExpression"
+	errMsg := "depiq: unsupported expression type sqlgen_test.unknownExpression"
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", sqlgen.DefaultDialectOptions()),
 		expressionTestCase{val: unknownExpression{}, err: errMsg},
@@ -368,8 +368,8 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_AppendableExpression() {
 		expressionTestCase{val: aliasedA, sql: `(select * from "a") AS "b"`},
 		expressionTestCase{val: aliasedA, sql: `(select * from "a") AS "b"`, isPrepared: true},
 
-		expressionTestCase{val: ae, err: "goqu: expected error"},
-		expressionTestCase{val: ae, err: "goqu: expected error", isPrepared: true},
+		expressionTestCase{val: ae, err: "depiq: expected error"},
+		expressionTestCase{val: ae, err: "depiq: expected error", isPrepared: true},
 
 		expressionTestCase{val: argsA, sql: `(select * from "a" where x=?) AS "b"`, args: []interface{}{true}},
 		expressionTestCase{val: argsA, sql: `(select * from "a" where x=?) AS "b"`, isPrepared: true, args: []interface{}{true}},
@@ -605,24 +605,24 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_BooleanExpression() {
 	opts.BooleanOperatorLookup = map[exp.BooleanOperation][]byte{}
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", opts),
-		expressionTestCase{val: ident.Eq(1), err: "goqu: boolean operator 'eq' not supported"},
-		expressionTestCase{val: ident.Neq(1), err: "goqu: boolean operator 'neq' not supported"},
-		expressionTestCase{val: ident.Is(true), err: "goqu: boolean operator 'is' not supported"},
-		expressionTestCase{val: ident.IsNot(true), err: "goqu: boolean operator 'isnot' not supported"},
-		expressionTestCase{val: ident.Gt(1), err: "goqu: boolean operator 'gt' not supported"},
-		expressionTestCase{val: ident.Gte(1), err: "goqu: boolean operator 'gte' not supported"},
-		expressionTestCase{val: ident.Lt(1), err: "goqu: boolean operator 'lt' not supported"},
-		expressionTestCase{val: ident.Lte(1), err: "goqu: boolean operator 'lte' not supported"},
-		expressionTestCase{val: ident.In([]int64{1, 2, 3}), err: "goqu: boolean operator 'in' not supported"},
-		expressionTestCase{val: ident.NotIn([]int64{1, 2, 3}), err: "goqu: boolean operator 'notin' not supported"},
-		expressionTestCase{val: ident.Like("a%"), err: "goqu: boolean operator 'like' not supported"},
-		expressionTestCase{val: ident.Like(re), err: "goqu: boolean operator 'regexplike' not supported"},
-		expressionTestCase{val: ident.ILike("a%"), err: "goqu: boolean operator 'ilike' not supported"},
-		expressionTestCase{val: ident.ILike(re), err: "goqu: boolean operator 'regexpilike' not supported"},
-		expressionTestCase{val: ident.NotLike("a%"), err: "goqu: boolean operator 'notlike' not supported"},
-		expressionTestCase{val: ident.NotLike(re), err: "goqu: boolean operator 'regexpnotlike' not supported"},
-		expressionTestCase{val: ident.NotILike("a%"), err: "goqu: boolean operator 'notilike' not supported"},
-		expressionTestCase{val: ident.NotILike(re), err: "goqu: boolean operator 'regexpnotilike' not supported"},
+		expressionTestCase{val: ident.Eq(1), err: "depiq: boolean operator 'eq' not supported"},
+		expressionTestCase{val: ident.Neq(1), err: "depiq: boolean operator 'neq' not supported"},
+		expressionTestCase{val: ident.Is(true), err: "depiq: boolean operator 'is' not supported"},
+		expressionTestCase{val: ident.IsNot(true), err: "depiq: boolean operator 'isnot' not supported"},
+		expressionTestCase{val: ident.Gt(1), err: "depiq: boolean operator 'gt' not supported"},
+		expressionTestCase{val: ident.Gte(1), err: "depiq: boolean operator 'gte' not supported"},
+		expressionTestCase{val: ident.Lt(1), err: "depiq: boolean operator 'lt' not supported"},
+		expressionTestCase{val: ident.Lte(1), err: "depiq: boolean operator 'lte' not supported"},
+		expressionTestCase{val: ident.In([]int64{1, 2, 3}), err: "depiq: boolean operator 'in' not supported"},
+		expressionTestCase{val: ident.NotIn([]int64{1, 2, 3}), err: "depiq: boolean operator 'notin' not supported"},
+		expressionTestCase{val: ident.Like("a%"), err: "depiq: boolean operator 'like' not supported"},
+		expressionTestCase{val: ident.Like(re), err: "depiq: boolean operator 'regexplike' not supported"},
+		expressionTestCase{val: ident.ILike("a%"), err: "depiq: boolean operator 'ilike' not supported"},
+		expressionTestCase{val: ident.ILike(re), err: "depiq: boolean operator 'regexpilike' not supported"},
+		expressionTestCase{val: ident.NotLike("a%"), err: "depiq: boolean operator 'notlike' not supported"},
+		expressionTestCase{val: ident.NotLike(re), err: "depiq: boolean operator 'regexpnotlike' not supported"},
+		expressionTestCase{val: ident.NotILike("a%"), err: "depiq: boolean operator 'notilike' not supported"},
+		expressionTestCase{val: ident.NotILike(re), err: "depiq: boolean operator 'regexpnotilike' not supported"},
 	)
 }
 
@@ -653,12 +653,12 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_BitwiseExpression() {
 	opts.BitwiseOperatorLookup = map[exp.BitwiseOperation][]byte{}
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", opts),
-		expressionTestCase{val: ident.BitwiseInversion(), err: "goqu: bitwise operator 'Inversion' not supported"},
-		expressionTestCase{val: ident.BitwiseAnd(1), err: "goqu: bitwise operator 'AND' not supported"},
-		expressionTestCase{val: ident.BitwiseOr(1), err: "goqu: bitwise operator 'OR' not supported"},
-		expressionTestCase{val: ident.BitwiseXor(1), err: "goqu: bitwise operator 'XOR' not supported"},
-		expressionTestCase{val: ident.BitwiseLeftShift(1), err: "goqu: bitwise operator 'Left Shift' not supported"},
-		expressionTestCase{val: ident.BitwiseRightShift(1), err: "goqu: bitwise operator 'Right Shift' not supported"},
+		expressionTestCase{val: ident.BitwiseInversion(), err: "depiq: bitwise operator 'Inversion' not supported"},
+		expressionTestCase{val: ident.BitwiseAnd(1), err: "depiq: bitwise operator 'AND' not supported"},
+		expressionTestCase{val: ident.BitwiseOr(1), err: "depiq: bitwise operator 'OR' not supported"},
+		expressionTestCase{val: ident.BitwiseXor(1), err: "depiq: bitwise operator 'XOR' not supported"},
+		expressionTestCase{val: ident.BitwiseLeftShift(1), err: "depiq: bitwise operator 'Left Shift' not supported"},
+		expressionTestCase{val: ident.BitwiseRightShift(1), err: "depiq: bitwise operator 'Right Shift' not supported"},
 	)
 }
 func (esgs *expressionSQLGeneratorSuite) TestGenerate_RangeExpression() {
@@ -702,17 +702,17 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_RangeExpression() {
 	opts.RangeOperatorLookup = map[exp.RangeOperation][]byte{}
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", opts),
-		expressionTestCase{val: betweenNum, err: "goqu: range operator between not supported"},
-		expressionTestCase{val: betweenNum, err: "goqu: range operator between not supported"},
+		expressionTestCase{val: betweenNum, err: "depiq: range operator between not supported"},
+		expressionTestCase{val: betweenNum, err: "depiq: range operator between not supported"},
 
-		expressionTestCase{val: notBetweenNum, err: "goqu: range operator not between not supported"},
-		expressionTestCase{val: notBetweenNum, err: "goqu: range operator not between not supported"},
+		expressionTestCase{val: notBetweenNum, err: "depiq: range operator not between not supported"},
+		expressionTestCase{val: notBetweenNum, err: "depiq: range operator not between not supported"},
 
-		expressionTestCase{val: betweenStr, err: "goqu: range operator between not supported"},
-		expressionTestCase{val: betweenStr, err: "goqu: range operator between not supported"},
+		expressionTestCase{val: betweenStr, err: "depiq: range operator between not supported"},
+		expressionTestCase{val: betweenStr, err: "depiq: range operator between not supported"},
 
-		expressionTestCase{val: notBetweenStr, err: "goqu: range operator not between not supported"},
-		expressionTestCase{val: notBetweenStr, err: "goqu: range operator not between not supported"},
+		expressionTestCase{val: notBetweenStr, err: "depiq: range operator not between not supported"},
+		expressionTestCase{val: notBetweenStr, err: "depiq: range operator not between not supported"},
 	)
 }
 
@@ -958,17 +958,17 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_CommonTableExpressionSlice
 	opts.SupportsWithCTE = false
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", opts),
-		expressionTestCase{val: cteNoArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]"},
-		expressionTestCase{val: cteNoArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
+		expressionTestCase{val: cteNoArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]"},
+		expressionTestCase{val: cteNoArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
 
-		expressionTestCase{val: cteArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]"},
-		expressionTestCase{val: cteArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
+		expressionTestCase{val: cteArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]"},
+		expressionTestCase{val: cteArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
 
-		expressionTestCase{val: cteRecursiveNoArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]"},
-		expressionTestCase{val: cteRecursiveNoArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
+		expressionTestCase{val: cteRecursiveNoArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]"},
+		expressionTestCase{val: cteRecursiveNoArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
 
-		expressionTestCase{val: cteRecursiveArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]"},
-		expressionTestCase{val: cteRecursiveArgs, err: "goqu: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
+		expressionTestCase{val: cteRecursiveArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]"},
+		expressionTestCase{val: cteRecursiveArgs, err: "depiq: dialect does not support CTE WITH clause [dialect=test]", isPrepared: true},
 	)
 	opts = sqlgen.DefaultDialectOptions()
 	opts.SupportsWithCTERecursive = false
@@ -982,21 +982,21 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_CommonTableExpressionSlice
 
 		expressionTestCase{
 			val: cteRecursiveNoArgs,
-			err: "goqu: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
+			err: "depiq: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
 		},
 		expressionTestCase{
 			val:        cteRecursiveNoArgs,
-			err:        "goqu: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
+			err:        "depiq: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
 			isPrepared: true,
 		},
 
 		expressionTestCase{
 			val: cteRecursiveArgs,
-			err: "goqu: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
+			err: "depiq: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
 		},
 		expressionTestCase{
 			val:        cteRecursiveArgs,
-			err:        "goqu: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
+			err:        "depiq: dialect does not support CTE WITH RECURSIVE clause [dialect=test]",
 			isPrepared: true,
 		},
 	)
@@ -1085,15 +1085,15 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_IdentifierExpression() {
 		sqlgen.NewExpressionSQLGenerator("test", sqlgen.DefaultDialectOptions()),
 		expressionTestCase{
 			val: exp.NewIdentifierExpression("", "", ""),
-			err: `goqu: a empty identifier was encountered, please specify a "schema", "table" or "column"`,
+			err: `depiq: a empty identifier was encountered, please specify a "schema", "table" or "column"`,
 		},
 		expressionTestCase{
 			val: exp.NewIdentifierExpression("", "", nil),
-			err: `goqu: a empty identifier was encountered, please specify a "schema", "table" or "column"`,
+			err: `depiq: a empty identifier was encountered, please specify a "schema", "table" or "column"`,
 		},
 		expressionTestCase{
 			val: exp.NewIdentifierExpression("", "", false),
-			err: `goqu: unexpected col type must be string or LiteralExpression received bool`,
+			err: `depiq: unexpected col type must be string or LiteralExpression received bool`,
 		},
 
 		expressionTestCase{val: col, sql: `"col"`},
@@ -1182,8 +1182,8 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_LateralExpression() {
 	do.SupportsLateral = false
 	esgs.assertCases(
 		sqlgen.NewExpressionSQLGenerator("test", do),
-		expressionTestCase{val: lateralExp, err: "goqu: dialect does not support lateral expressions [dialect=test]"},
-		expressionTestCase{val: lateralExp, err: "goqu: dialect does not support lateral expressions [dialect=test]", isPrepared: true},
+		expressionTestCase{val: lateralExp, err: "depiq: dialect does not support lateral expressions [dialect=test]"},
+		expressionTestCase{val: lateralExp, err: "depiq: dialect does not support lateral expressions [dialect=test]", isPrepared: true},
 	)
 }
 
@@ -1241,7 +1241,7 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_CaseExpression() {
 		},
 		expressionTestCase{
 			val: exp.NewCaseExpression(),
-			err: "goqu: when conditions not found for case statement",
+			err: "depiq: when conditions not found for case statement",
 		},
 	)
 
@@ -1286,7 +1286,7 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_CaseExpression() {
 		},
 		expressionTestCase{
 			val: exp.NewCaseExpression(),
-			err: "goqu: when conditions not found for case statement",
+			err: "depiq: when conditions not found for case statement",
 		},
 	)
 }
@@ -1324,12 +1324,12 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_ExpressionMapWithABadOp() 
 		sqlgen.NewExpressionSQLGenerator("test", sqlgen.DefaultDialectOptions()),
 		expressionTestCase{
 			val: exp.Ex{"a": exp.Op{"badOp": true}},
-			err: "goqu: unsupported expression type badOp",
+			err: "depiq: unsupported expression type badOp",
 		},
 		expressionTestCase{
 			val:        exp.Ex{"a": exp.Op{"badOp": true}},
 			isPrepared: true,
-			err:        "goqu: unsupported expression type badOp",
+			err:        "depiq: unsupported expression type badOp",
 		},
 	)
 }
@@ -1636,12 +1636,12 @@ func (esgs *expressionSQLGeneratorSuite) TestGenerate_ExpressionOrMap() {
 
 		expressionTestCase{
 			val: exp.ExOr{"a": exp.Op{"badOp": true}},
-			err: "goqu: unsupported expression type badOp",
+			err: "depiq: unsupported expression type badOp",
 		},
 		expressionTestCase{
 			val:        exp.ExOr{"a": exp.Op{"badOp": true}},
 			isPrepared: true,
-			err:        "goqu: unsupported expression type badOp",
+			err:        "depiq: unsupported expression type badOp",
 		},
 
 		expressionTestCase{val: exp.ExOr{"a": 1, "b": true}, sql: `(("a" = 1) OR ("b" IS TRUE))`},

@@ -26,9 +26,9 @@ func newColumnMap(t reflect.Type, fieldIndex []int, prefixes []string) ColumnMap
 	for i := 0; i < n; i++ {
 		f := t.Field(i)
 		if f.Anonymous && (f.Type.Kind() == reflect.Struct || f.Type.Kind() == reflect.Ptr) {
-			goquTag := tag.New("db", f.Tag)
-			if !goquTag.Contains("-") {
-				subColMaps = append(subColMaps, getStructColumnMap(&f, fieldIndex, goquTag.Values(), prefixes))
+			depiqTag := tag.New("db", f.Tag)
+			if !depiqTag.Contains("-") {
+				subColMaps = append(subColMaps, getStructColumnMap(&f, fieldIndex, depiqTag.Values(), prefixes))
 			}
 		} else if f.PkgPath == "" {
 			dbTag := tag.New("db", f.Tag)
@@ -42,9 +42,9 @@ func newColumnMap(t reflect.Type, fieldIndex []int, prefixes []string) ColumnMap
 						continue
 					}
 				}
-				goquTag := tag.New("goqu", f.Tag)
+				depiqTag := tag.New("depiq", f.Tag)
 				columnName = strings.Join(append(prefixes, columnName), ".")
-				cm[columnName] = newColumnData(&f, columnName, fieldIndex, goquTag)
+				cm[columnName] = newColumnData(&f, columnName, fieldIndex, depiqTag)
 			}
 		}
 	}
@@ -85,12 +85,12 @@ func implementsScanner(t reflect.Type) bool {
 	return false
 }
 
-func newColumnData(f *reflect.StructField, columnName string, fieldIndex []int, goquTag tag.Options) ColumnData {
+func newColumnData(f *reflect.StructField, columnName string, fieldIndex []int, depiqTag tag.Options) ColumnData {
 	return ColumnData{
 		ColumnName:     columnName,
-		ShouldInsert:   !goquTag.Contains(skipInsertTagName),
-		ShouldUpdate:   !goquTag.Contains(skipUpdateTagName),
-		DefaultIfEmpty: goquTag.Contains(defaultIfEmptyTagName),
+		ShouldInsert:   !depiqTag.Contains(skipInsertTagName),
+		ShouldUpdate:   !depiqTag.Contains(skipUpdateTagName),
+		DefaultIfEmpty: depiqTag.Contains(defaultIfEmptyTagName),
 		FieldIndex:     concatFieldIndexes(fieldIndex, f.Index),
 		GoType:         f.Type,
 	}

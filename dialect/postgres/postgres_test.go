@@ -35,7 +35,7 @@ const schema = `
             (9, 0.900000, '0.900000', '2015-02-23T03:19:55.000000000-00:00', FALSE, '0.900000');
     `
 
-const defaultDBURI = "postgres://postgres:@localhost:5435/goqupostgres?sslmode=disable"
+const defaultDBURI = "postgres://postgres:@localhost:5435/depiqpostgres?sslmode=disable"
 
 type (
 	postgresTest struct {
@@ -43,7 +43,7 @@ type (
 		db *depiq.Database
 	}
 	entry struct {
-		ID     uint32    `db:"id" goqu:"skipinsert,skipupdate"`
+		ID     uint32    `db:"id" depiq:"skipinsert,skipupdate"`
 		Int    int       `db:"int"`
 		Float  float64   `db:"float"`
 		String string    `db:"string"`

@@ -681,10 +681,10 @@ func (rt *reflectTest) TestGetColumnMap_withStruct() {
 
 func (rt *reflectTest) TestGetColumnMap_withStructGoquTags() {
 	type TestStruct struct {
-		Str    string `goqu:"skipinsert,skipupdate"`
-		Int    int64  `goqu:"skipinsert"`
-		Bool   bool   `goqu:"skipupdate"`
-		Empty  bool   `goqu:"defaultifempty"`
+		Str    string `depiq:"skipinsert,skipupdate"`
+		Int    int64  `depiq:"skipinsert"`
+		Bool   bool   `depiq:"skipupdate"`
+		Empty  bool   `depiq:"defaultifempty"`
 		Valuer *sql.NullString
 	}
 	var ts TestStruct
@@ -752,9 +752,9 @@ func (rt *reflectTest) TestGetColumnMap_withStructWithTag() {
 
 func (rt *reflectTest) TestGetColumnMap_withStructWithTagAndGoquTag() {
 	type TestStruct struct {
-		Str    string          `db:"s" goqu:"skipinsert,skipupdate"`
-		Int    int64           `db:"i" goqu:"skipinsert"`
-		Bool   bool            `db:"b" goqu:"skipupdate"`
+		Str    string          `db:"s" depiq:"skipinsert,skipupdate"`
+		Int    int64           `db:"i" depiq:"skipinsert"`
+		Bool   bool            `db:"b" depiq:"skipupdate"`
 		Valuer *sql.NullString `db:"v"`
 	}
 	var ts TestStruct
@@ -806,7 +806,7 @@ func (rt *reflectTest) TestGetColumnMap_withSliceOfStructs() {
 func (rt *reflectTest) TestGetColumnMap_withNonStruct() {
 	var v int64
 	_, err := util.GetColumnMap(&v)
-	rt.EqualError(err, "goqu: cannot scan into this type: int64")
+	rt.EqualError(err, "depiq: cannot scan into this type: int64")
 }
 
 func (rt *reflectTest) TestGetColumnMap_withStructWithEmbeddedStruct() {

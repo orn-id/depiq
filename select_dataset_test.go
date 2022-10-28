@@ -1233,11 +1233,11 @@ func (sds *selectDatasetSuite) TestScanStructs() {
 
 	items = items[0:0]
 	sds.EqualError(db.From("items").Fetch(items),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	sds.EqualError(db.From("items").Fetch(&dsTestActionItem{}),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	sds.EqualError(db.From("items").Select("test").Fetch(&items),
-		`goqu: unable to find corresponding field to column "test" returned by query`)
+		`depiq: unable to find corresponding field to column "test" returned by query`)
 
 	sds.Equal(depiq.ErrQueryFactoryNotFoundError, depiq.From("items").Fetch(items))
 }
@@ -1278,14 +1278,14 @@ func (sds *selectDatasetSuite) TestScanStructs_WithPreparedStatements() {
 
 	items = items[0:0]
 	sds.EqualError(db.From("items").Fetch(items),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	sds.EqualError(db.From("items").Fetch(&dsTestActionItem{}),
-		"goqu: type must be a pointer to a slice when scanning into structs")
+		"depiq: type must be a pointer to a slice when scanning into structs")
 	sds.EqualError(db.From("items").
 		Prepared(true).
 		Select("test").
 		Where(depiq.Ex{"name": []string{"Bob", "Sally", "Billy"}, "address": "111 Test Addr"}).
-		Fetch(&items), `goqu: unable to find corresponding field to column "test" returned by query`)
+		Fetch(&items), `depiq: unable to find corresponding field to column "test" returned by query`)
 }
 
 func (sds *selectDatasetSuite) TestScanStruct() {
@@ -1319,11 +1319,11 @@ func (sds *selectDatasetSuite) TestScanStruct() {
 	sds.Equal("Test1", item.Name)
 
 	_, err = db.From("items").FecthRow(item)
-	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	sds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.From("items").FecthRow([]dsTestActionItem{})
-	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	sds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.From("items").Select("test").FecthRow(&item)
-	sds.EqualError(err, `goqu: unable to find corresponding field to column "test" returned by query`)
+	sds.EqualError(err, `depiq: unable to find corresponding field to column "test" returned by query`)
 
 	_, err = depiq.From("items").FecthRow(item)
 	sds.Equal(depiq.ErrQueryFactoryNotFoundError, err)
@@ -1354,15 +1354,15 @@ func (sds *selectDatasetSuite) TestScanStruct_WithPreparedStatements() {
 	sds.Equal("Test1", item.Name)
 
 	_, err = db.From("items").FecthRow(item)
-	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	sds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.From("items").FecthRow([]dsTestActionItem{})
-	sds.EqualError(err, "goqu: type must be a pointer to a struct when scanning into a struct")
+	sds.EqualError(err, "depiq: type must be a pointer to a struct when scanning into a struct")
 	_, err = db.From("items").
 		Prepared(true).
 		Select("test").
 		Where(depiq.Ex{"name": []string{"Bob", "Sally", "Billy"}, "address": "111 Test Addr"}).
 		FecthRow(&item)
-	sds.EqualError(err, `goqu: unable to find corresponding field to column "test" returned by query`)
+	sds.EqualError(err, `depiq: unable to find corresponding field to column "test" returned by query`)
 }
 
 func (sds *selectDatasetSuite) TestScanStructUntagged() {
@@ -1419,9 +1419,9 @@ func (sds *selectDatasetSuite) TestScanVals() {
 	sds.Equal(ids, []uint32{1, 2, 3, 4, 5})
 
 	sds.EqualError(db.From("items").ScanVals([]uint32{}),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 	sds.EqualError(db.From("items").ScanVals(dsTestActionItem{}),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 
 	err = depiq.From("items").ScanVals(&ids)
 	sds.Equal(depiq.ErrQueryFactoryNotFoundError, err)
@@ -1453,10 +1453,10 @@ func (sds *selectDatasetSuite) TestScanVals_WithPreparedStatment() {
 	sds.Equal([]uint32{1, 2, 3, 4, 5}, ids)
 
 	sds.EqualError(db.From("items").ScanVals([]uint32{}),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 
 	sds.EqualError(db.From("items").ScanVals(dsTestActionItem{}),
-		"goqu: type must be a pointer to a slice when scanning into vals")
+		"depiq: type must be a pointer to a slice when scanning into vals")
 }
 
 func (sds *selectDatasetSuite) TestScanVal() {
@@ -1475,10 +1475,10 @@ func (sds *selectDatasetSuite) TestScanVal() {
 
 	found, err = db.From("items").ScanVal([]int64{})
 	sds.False(found)
-	sds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	sds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 	found, err = db.From("items").ScanVal(10)
 	sds.False(found)
-	sds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	sds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 
 	_, err = depiq.From("items").ScanVal(&id)
 	sds.Equal(depiq.ErrQueryFactoryNotFoundError, err)
@@ -1506,10 +1506,10 @@ func (sds *selectDatasetSuite) TestScanVal_WithPreparedStatement() {
 
 	found, err = db.From("items").ScanVal([]int64{})
 	sds.False(found)
-	sds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	sds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 	found, err = db.From("items").ScanVal(10)
 	sds.False(found)
-	sds.EqualError(err, "goqu: type must be a pointer when scanning into val")
+	sds.EqualError(err, "depiq: type must be a pointer when scanning into val")
 }
 
 func (sds *selectDatasetSuite) TestCount() {

@@ -63,7 +63,7 @@ func (sds *sqlite3DialectSuite) TestUpdateSQL_multipleTables() {
 				Set(depiq.Record{"foo": "bar"}).
 				From("test_2").
 				Where(depiq.I("test.id").Eq(depiq.I("test_2.test_id"))),
-			err: "goqu: sqlite3 dialect does not support multiple tables in UPDATE",
+			err: "depiq: sqlite3 dialect does not support multiple tables in UPDATE",
 		},
 	)
 }
@@ -136,10 +136,10 @@ func (sds *sqlite3DialectSuite) TestBitwiseOperations() {
 	col := depiq.C("a")
 	ds := sds.GetDs("test")
 	sds.assertSQL(
-		sqlTestCase{ds: ds.Where(col.BitwiseInversion()), err: "goqu: bitwise operator 'Inversion' not supported"},
+		sqlTestCase{ds: ds.Where(col.BitwiseInversion()), err: "depiq: bitwise operator 'Inversion' not supported"},
 		sqlTestCase{ds: ds.Where(col.BitwiseAnd(1)), sql: "SELECT * FROM `test` WHERE (`a` & 1)"},
 		sqlTestCase{ds: ds.Where(col.BitwiseOr(1)), sql: "SELECT * FROM `test` WHERE (`a` | 1)"},
-		sqlTestCase{ds: ds.Where(col.BitwiseXor(1)), err: "goqu: bitwise operator 'XOR' not supported"},
+		sqlTestCase{ds: ds.Where(col.BitwiseXor(1)), err: "depiq: bitwise operator 'XOR' not supported"},
 		sqlTestCase{ds: ds.Where(col.BitwiseLeftShift(1)), sql: "SELECT * FROM `test` WHERE (`a` << 1)"},
 		sqlTestCase{ds: ds.Where(col.BitwiseRightShift(1)), sql: "SELECT * FROM `test` WHERE (`a` >> 1)"},
 	)

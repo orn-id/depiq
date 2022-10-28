@@ -5,7 +5,7 @@ services:
     image: "postgres:${POSTGRES_VERSION}"
     environment:
       - "POSTGRES_USER=postgres"
-      - "POSTGRES_DB=goqupostgres"
+      - "POSTGRES_DB=depiqpostgres"
       - "POSTGRES_HOST_AUTH_METHOD=trust"
     expose:
       - "5432"
@@ -15,7 +15,7 @@ services:
   mysql:
     image: "mysql:${MYSQL_VERSION}"
     environment:
-      - "MYSQL_DATABASE=goqumysql"
+      - "MYSQL_DATABASE=depiqmysql"
       - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
     expose:
       - "3306"
@@ -32,29 +32,29 @@ services:
     ports:
       - "1433:1433"
 
-  goqu:
+  depiq:
     image: "golang:${GO_VERSION}"
     command: ["./wait-for-it.sh", "postgres:5432", "--", "./wait-for-it.sh", "mysql:3306", "--", "go test -v -race ./..."]
     working_dir: /go/src/github.com/orn-id/depiq
     volumes:
       - "./:/go/src/github.com/orn-id/depiq"
     environment:
-      MYSQL_URI: 'root@tcp(mysql:3306)/goqumysql?parseTime=true'
-      PG_URI: 'postgres://postgres:@postgres:5432/goqupostgres?sslmode=disable'
+      MYSQL_URI: 'root@tcp(mysql:3306)/depiqmysql?parseTime=true'
+      PG_URI: 'postgres://postgres:@postgres:5432/depiqpostgres?sslmode=disable'
       SQLSERVER_URI: 'sqlserver://sa:qwe123QWE@sqlserver:1433?database=master&connection+timeout=30'
     depends_on:
       - postgres
       - mysql
       - sqlserver
-  goqu-coverage:
+  depiq-coverage:
     image: "golang:${GO_VERSION}"
     command: ["./wait-for-it.sh", "postgres:5432", "--", "./wait-for-it.sh", "mysql:3306", "--", "./go.test.sh"]
     working_dir: /go/src/github.com/orn-id/depiq
     volumes:
       - "./:/go/src/github.com/orn-id/depiq"
     environment:
-      MYSQL_URI: 'root@tcp(mysql:3306)/goqumysql?parseTime=true'
-      PG_URI: 'postgres://postgres:@postgres:5432/goqupostgres?sslmode=disable'
+      MYSQL_URI: 'root@tcp(mysql:3306)/depiqmysql?parseTime=true'
+      PG_URI: 'postgres://postgres:@postgres:5432/depiqpostgres?sslmode=disable'
       SQLSERVER_URI: 'sqlserver://sa:qwe123QWE@sqlserver:1433?database=master&connection+timeout=30'
     depends_on:
       - postgres

@@ -45,7 +45,7 @@ func ExampleUpdate_withMap() {
 func ExampleUpdate_withSkipUpdateTag() {
 	type item struct {
 		Address string `db:"address"`
-		Name    string `db:"name" goqu:"skipupdate"`
+		Name    string `db:"name" depiq:"skipupdate"`
 	}
 	sql, args, _ := depiq.Update("items").Set(
 		item{Name: "Test", Address: "111 Test Addr"},
@@ -58,7 +58,7 @@ func ExampleUpdate_withSkipUpdateTag() {
 
 func ExampleUpdateDataset_Executor() {
 	db := getDB()
-	update := db.Update("goqu_user").
+	update := db.Update("depiq_user").
 		Where(depiq.C("first_name").Eq("Bob")).
 		Set(depiq.Record{"first_name": "Bobby"}).
 		Executor()
@@ -77,7 +77,7 @@ func ExampleUpdateDataset_Executor() {
 func ExampleUpdateDataset_Executor_returning() {
 	db := getDB()
 	var ids []int64
-	update := db.Update("goqu_user").
+	update := db.Update("depiq_user").
 		Set(depiq.Record{"last_name": "ucon"}).
 		Where(depiq.Ex{"last_name": "Yukon"}).
 		Returning("id").
@@ -467,7 +467,7 @@ func ExampleUpdateDataset_Set_struct() {
 	// UPDATE "items" SET "address"='111 Test Addr',"name"='Test' []
 }
 
-func ExampleUpdateDataset_Set_goquRecord() {
+func ExampleUpdateDataset_Set_depiqRecord() {
 	sql, args, _ := depiq.Update("items").Set(
 		depiq.Record{"name": "Test", "address": "111 Test Addr"},
 	).ToSQL()
@@ -490,7 +490,7 @@ func ExampleUpdateDataset_Set_map() {
 func ExampleUpdateDataset_Set_withSkipUpdateTag() {
 	type item struct {
 		Address string `db:"address"`
-		Name    string `db:"name" goqu:"skipupdate"`
+		Name    string `db:"name" depiq:"skipupdate"`
 	}
 	sql, args, _ := depiq.Update("items").Set(
 		item{Name: "Test", Address: "111 Test Addr"},
@@ -504,7 +504,7 @@ func ExampleUpdateDataset_Set_withSkipUpdateTag() {
 func ExampleUpdateDataset_Set_withDefaultIfEmptyTag() {
 	type item struct {
 		Address string `db:"address"`
-		Name    string `db:"name" goqu:"defaultifempty"`
+		Name    string `db:"name" depiq:"defaultifempty"`
 	}
 	sql, args, _ := depiq.Update("items").Set(
 		item{Address: "111 Test Addr"},

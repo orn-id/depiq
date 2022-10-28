@@ -10,7 +10,7 @@ import (
 	_ "github.com/orn-id/depiq/dialect/postgres"
 )
 
-func ExampleInsert_goquRecord() {
+func ExampleInsert_depiqRecord() {
 	ds := depiq.Insert("user").Rows(
 		depiq.Record{"first_name": "Greg", "last_name": "Farley"},
 		depiq.Record{"first_name": "Jimmy", "last_name": "Stewart"},
@@ -104,7 +104,7 @@ func ExampleInsert_colsAndVals() {
 
 func ExampleInsertDataset_Executor_withRecord() {
 	db := getDB()
-	insert := db.Insert("goqu_user").Rows(
+	insert := db.Insert("depiq_user").Rows(
 		depiq.Record{"first_name": "Jed", "last_name": "Riley", "created": time.Now()},
 	).Executor()
 	if _, err := insert.Exec(); err != nil {
@@ -118,7 +118,7 @@ func ExampleInsertDataset_Executor_withRecord() {
 		{"first_name": "Jimmy", "last_name": "Stewart", "created": time.Now()},
 		{"first_name": "Jeff", "last_name": "Jeffers", "created": time.Now()},
 	}
-	if _, err := db.Insert("goqu_user").Rows(users).Executor().Exec(); err != nil {
+	if _, err := db.Insert("depiq_user").Rows(users).Executor().Exec(); err != nil {
 		fmt.Println(err.Error())
 	} else {
 		fmt.Printf("Inserted %d users", len(users))
@@ -139,7 +139,7 @@ func ExampleInsertDataset_Executor_recordReturning() {
 		Created   time.Time     `db:"created"`
 	}
 
-	insert := db.Insert("goqu_user").Returning(depiq.C("id")).Rows(
+	insert := db.Insert("depiq_user").Returning(depiq.C("id")).Rows(
 		depiq.Record{"first_name": "Jed", "last_name": "Riley", "created": time.Now()},
 	).Executor()
 	var id int64
@@ -149,7 +149,7 @@ func ExampleInsertDataset_Executor_recordReturning() {
 		fmt.Printf("Inserted 1 user id:=%d\n", id)
 	}
 
-	insert = db.Insert("goqu_user").Returning(depiq.Star()).Rows([]depiq.Record{
+	insert = db.Insert("depiq_user").Returning(depiq.Star()).Rows([]depiq.Record{
 		{"first_name": "Greg", "last_name": "Farley", "created": time.Now()},
 		{"first_name": "Jimmy", "last_name": "Stewart", "created": time.Now()},
 		{"first_name": "Jeff", "last_name": "Jeffers", "created": time.Now()},
@@ -174,13 +174,13 @@ func ExampleInsertDataset_Executor_scanStructs() {
 	db := getDB()
 
 	type User struct {
-		ID        sql.NullInt64 `db:"id" goqu:"skipinsert"`
+		ID        sql.NullInt64 `db:"id" depiq:"skipinsert"`
 		FirstName string        `db:"first_name"`
 		LastName  string        `db:"last_name"`
 		Created   time.Time     `db:"created"`
 	}
 
-	insert := db.Insert("goqu_user").Returning("id").Rows(
+	insert := db.Insert("depiq_user").Returning("id").Rows(
 		User{FirstName: "Jed", LastName: "Riley"},
 	).Executor()
 	var id int64
@@ -190,7 +190,7 @@ func ExampleInsertDataset_Executor_scanStructs() {
 		fmt.Printf("Inserted 1 user id:=%d\n", id)
 	}
 
-	insert = db.Insert("goqu_user").Returning(depiq.Star()).Rows([]User{
+	insert = db.Insert("depiq_user").Returning(depiq.Star()).Rows([]User{
 		{FirstName: "Greg", LastName: "Farley", Created: time.Now()},
 		{FirstName: "Jimmy", LastName: "Stewart", Created: time.Now()},
 		{FirstName: "Jeff", LastName: "Jeffers", Created: time.Now()},
@@ -222,7 +222,7 @@ func ExampleInsertDataset_FromQuery() {
 
 func ExampleInsertDataset_ToSQL() {
 	type item struct {
-		ID      uint32 `db:"id" goqu:"skipinsert"`
+		ID      uint32 `db:"id" depiq:"skipinsert"`
 		Address string `db:"address"`
 		Name    string `db:"name"`
 	}
@@ -260,7 +260,7 @@ func ExampleInsertDataset_ToSQL() {
 
 func ExampleInsertDataset_Prepared() {
 	type item struct {
-		ID      uint32 `db:"id" goqu:"skipinsert"`
+		ID      uint32 `db:"id" depiq:"skipinsert"`
 		Address string `db:"address"`
 		Name    string `db:"name"`
 	}
@@ -299,7 +299,7 @@ func ExampleInsertDataset_Prepared() {
 
 func ExampleInsertDataset_ClearRows() {
 	type item struct {
-		ID      uint32 `goqu:"skipinsert"`
+		ID      uint32 `depiq:"skipinsert"`
 		Address string
 		Name    string
 	}
@@ -316,7 +316,7 @@ func ExampleInsertDataset_ClearRows() {
 
 func ExampleInsertDataset_Rows_withNoDbTag() {
 	type item struct {
-		ID      uint32 `goqu:"skipinsert"`
+		ID      uint32 `depiq:"skipinsert"`
 		Address string
 		Name    string
 	}
@@ -352,9 +352,9 @@ func ExampleInsertDataset_Rows_withNoDbTag() {
 
 func ExampleInsertDataset_Rows_withGoquSkipInsertTag() {
 	type item struct {
-		ID      uint32 `goqu:"skipinsert"`
+		ID      uint32 `depiq:"skipinsert"`
 		Address string
-		Name    string `goqu:"skipinsert"`
+		Name    string `depiq:"skipinsert"`
 	}
 	insertSQL, args, _ := depiq.Insert("items").
 		Rows(
@@ -379,9 +379,9 @@ func ExampleInsertDataset_Rows_withGoquSkipInsertTag() {
 
 func ExampleInsertDataset_Rows_withGoquDefaultIfEmptyTag() {
 	type item struct {
-		ID      uint32 `goqu:"skipinsert"`
+		ID      uint32 `depiq:"skipinsert"`
 		Address string
-		Name    string `goqu:"defaultifempty"`
+		Name    string `depiq:"defaultifempty"`
 	}
 	insertSQL, args, _ := depiq.Insert("items").
 		Rows(
@@ -472,7 +472,7 @@ func ExampleInsertDataset_Rows_withNilEmbeddedPointer() {
 
 func ExampleInsertDataset_ClearOnConflict() {
 	type item struct {
-		ID      uint32 `db:"id" goqu:"skipinsert"`
+		ID      uint32 `db:"id" depiq:"skipinsert"`
 		Address string `db:"address"`
 		Name    string `db:"name"`
 	}
@@ -489,7 +489,7 @@ func ExampleInsertDataset_ClearOnConflict() {
 
 func ExampleInsertDataset_OnConflict_doNothing() {
 	type item struct {
-		ID      uint32 `db:"id" goqu:"skipinsert"`
+		ID      uint32 `db:"id" depiq:"skipinsert"`
 		Address string `db:"address"`
 		Name    string `db:"name"`
 	}
@@ -519,7 +519,7 @@ func ExampleInsertDataset_OnConflict_doUpdate() {
 
 func ExampleInsertDataset_OnConflict_doUpdateWithWhere() {
 	type item struct {
-		ID      uint32 `db:"id" goqu:"skipinsert"`
+		ID      uint32 `db:"id" depiq:"skipinsert"`
 		Address string `db:"address"`
 		Name    string `db:"name"`
 	}

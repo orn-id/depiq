@@ -74,8 +74,8 @@ func (csgs *commonSQLGeneratorSuite) TestReturningSQL() {
 		commonSQLTestCase{gen: returningNilExpGen(csgs1), sql: ``},
 		commonSQLTestCase{gen: returningNilExpGen(csgs1), sql: ``, isPrepared: true, args: emptyArgs},
 
-		commonSQLTestCase{gen: returningGen(csgs2), err: `goqu: dialect does not support RETURNING clause [dialect=test]`},
-		commonSQLTestCase{gen: returningGen(csgs2), err: `goqu: dialect does not support RETURNING clause [dialect=test]`},
+		commonSQLTestCase{gen: returningGen(csgs2), err: `depiq: dialect does not support RETURNING clause [dialect=test]`},
+		commonSQLTestCase{gen: returningGen(csgs2), err: `depiq: dialect does not support RETURNING clause [dialect=test]`},
 	)
 }
 
