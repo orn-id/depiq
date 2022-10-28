@@ -382,7 +382,7 @@ func (ds *databaseSuite) TestDataRace() {
 
 			sql := db.From("items").Limit(1)
 			var item testActionItem
-			found, err := sql.ScanStruct(&item)
+			found, err := sql.FecthRow(&item)
 			ds.NoError(err)
 			ds.True(found)
 			ds.Equal(item.Address, "111 Test Addr")
@@ -741,7 +741,7 @@ func (tds *txdatabaseSuite) TestDataRace() {
 
 			sql := tx.From("items").Limit(1)
 			var item testActionItem
-			found, err := sql.ScanStruct(&item)
+			found, err := sql.FecthRow(&item)
 			tds.NoError(err)
 			tds.True(found)
 			tds.Equal(item.Address, "111 Test Addr")

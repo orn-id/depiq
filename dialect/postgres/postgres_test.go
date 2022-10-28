@@ -62,7 +62,7 @@ type (
 func (pt *postgresTest) assertEntries(cases ...entryTestCase) {
 	for i, c := range cases {
 		var entries []entry
-		err := c.ds.ScanStructs(&entries)
+		err := c.ds.Fetch(&entries)
 		if c.err == "" {
 			pt.NoError(err, "test case %d failed", i)
 		} else {
@@ -226,7 +226,7 @@ func (pt *postgresTest) TestQuery_ValueExpressions() {
 	pt.NoError(err)
 	ds := pt.db.From("entry").Select(depiq.Star(), depiq.V(true).As("bool_value")).Where(depiq.Ex{"int": 1})
 	var we wrappedEntry
-	found, err := ds.ScanStruct(&we)
+	found, err := ds.FecthRow(&we)
 	pt.NoError(err)
 	pt.True(found)
 	pt.Equal(1, we.Int)
@@ -265,7 +265,7 @@ func (pt *postgresTest) TestInsert() {
 	pt.NoError(err)
 
 	var insertedEntry entry
-	found, err := ds.Where(depiq.C("int").Eq(10)).ScanStruct(&insertedEntry)
+	found, err := ds.Where(depiq.C("int").Eq(10)).FecthRow(&insertedEntry)
 	pt.NoError(err)
 	pt.True(found)
 	pt.True(insertedEntry.ID > 0)
@@ -281,7 +281,7 @@ func (pt *postgresTest) TestInsert() {
 
 	var newEntries []entry
 
-	pt.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).ScanStructs(&newEntries))
+	pt.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).Fetch(&newEntries))
 	pt.Len(newEntries, 4)
 	for i, e := range newEntries {
 		pt.Equal(entries[i].Int, e.Int)
@@ -301,7 +301,7 @@ func (pt *postgresTest) TestInsert() {
 	pt.NoError(err)
 
 	newEntries = newEntries[0:0]
-	pt.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).ScanStructs(&newEntries))
+	pt.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).Fetch(&newEntries))
 	pt.Len(newEntries, 4)
 }
 
@@ -340,7 +340,7 @@ func (pt *postgresTest) TestInsertReturning() {
 func (pt *postgresTest) TestUpdate() {
 	ds := pt.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	pt.NoError(err)
 	pt.True(found)
 	e.Int = 11
@@ -375,7 +375,7 @@ func (pt *postgresTest) TestUpdateSQL_multipleTables() {
 func (pt *postgresTest) TestDelete() {
 	ds := pt.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	pt.NoError(err)
 	pt.True(found)
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Executor().Exec()
@@ -391,7 +391,7 @@ func (pt *postgresTest) TestDelete() {
 	pt.False(found)
 
 	e = entry{}
-	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").ScanStruct(&e)
+	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").FecthRow(&e)
 	pt.NoError(err)
 	pt.True(found)
 	pt.NotEqual(e.ID, int64(0))
@@ -424,7 +424,7 @@ func (pt *postgresTest) TestInsert_OnConflict() {
 		OnConflict(depiq.DoUpdate("int", depiq.Record{"string": "upsert"})).
 		Executor().Exec()
 	pt.NoError(err)
-	_, err = ds.Where(depiq.C("int").Eq(0)).ScanStruct(&entryActual)
+	_, err = ds.Where(depiq.C("int").Eq(0)).FecthRow(&entryActual)
 	pt.NoError(err)
 	pt.Equal("upsert", entryActual.String)
 
@@ -441,11 +441,11 @@ func (pt *postgresTest) TestInsert_OnConflict() {
 	pt.NoError(err)
 
 	var entry8, entry9 entry
-	_, err = ds.Where(depiq.Ex{"int": 1}).ScanStruct(&entry8)
+	_, err = ds.Where(depiq.Ex{"int": 1}).FecthRow(&entry8)
 	pt.NoError(err)
 	pt.Equal("0.100000", entry8.String)
 
-	_, err = ds.Where(depiq.Ex{"int": 2}).ScanStruct(&entry9)
+	_, err = ds.Where(depiq.Ex{"int": 2}).FecthRow(&entry9)
 	pt.NoError(err)
 	pt.Equal("upsert", entry9.String)
 }
@@ -456,7 +456,7 @@ func (pt *postgresTest) TestWindowFunction() {
 		Window(depiq.W("w").OrderBy(depiq.I("int").Desc()))
 
 	var entries []entry
-	pt.NoError(ds.ScanStructs(&entries))
+	pt.NoError(ds.Fetch(&entries))
 
 	pt.Equal([]entry{
 		{Int: 9, ID: 1},
@@ -477,7 +477,7 @@ func (pt *postgresTest) TestOrderByFunction() {
 		Select(depiq.ROW_NUMBER().Over(depiq.W()).As("id")).Window().Order(depiq.ROW_NUMBER().Over(depiq.W()).Desc())
 
 	var entries []entry
-	pt.NoError(ds.ScanStructs(&entries))
+	pt.NoError(ds.Fetch(&entries))
 
 	pt.Equal([]entry{
 		{ID: 10},

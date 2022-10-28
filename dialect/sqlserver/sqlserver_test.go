@@ -66,7 +66,7 @@ type (
 func (sst *sqlserverTest) assertEntries(cases ...entryTestCase) {
 	for i, c := range cases {
 		var entries []entry
-		err := c.ds.ScanStructs(&entries)
+		err := c.ds.Fetch(&entries)
 		if c.err == "" {
 			sst.NoError(err, "test case %d failed", i)
 		} else {
@@ -238,7 +238,7 @@ func (sst *sqlserverTest) TestQuery_ValueExpressions() {
 	sst.NoError(err)
 	ds := sst.db.From("entry").Select(depiq.Star(), depiq.V(true).As("bool_value")).Where(depiq.Ex{"int": 1})
 	var we wrappedEntry
-	found, err := ds.ScanStruct(&we)
+	found, err := ds.FecthRow(&we)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(wrappedEntry{
@@ -269,19 +269,19 @@ func (sst *sqlserverTest) TestCount() {
 func (sst *sqlserverTest) TestLimitOffset() {
 	ds := sst.db.From("entry").Where(depiq.C("id").Gte(1)).Limit(1)
 	var e entry
-	found, err := ds.ScanStruct(&e)
+	found, err := ds.FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(uint32(1), e.ID)
 
 	ds = sst.db.From("entry").Where(depiq.C("id").Gte(1)).Order(depiq.C("id").Desc()).Limit(1)
-	found, err = ds.ScanStruct(&e)
+	found, err = ds.FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(uint32(10), e.ID)
 
 	ds = sst.db.From("entry").Where(depiq.C("id").Gte(1)).Order(depiq.C("id").Asc()).Offset(1).Limit(1)
-	found, err = ds.ScanStruct(&e)
+	found, err = ds.FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(uint32(2), e.ID)
@@ -290,19 +290,19 @@ func (sst *sqlserverTest) TestLimitOffset() {
 func (sst *sqlserverTest) TestLimitOffsetParameterized() {
 	ds := sst.db.From("entry").Prepared(true).Where(depiq.C("id").Gte(1)).Limit(1)
 	var e entry
-	found, err := ds.ScanStruct(&e)
+	found, err := ds.FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(uint32(1), e.ID)
 
 	ds = sst.db.From("entry").Prepared(true).Where(depiq.C("id").Gte(1)).Order(depiq.C("id").Desc()).Limit(1)
-	found, err = ds.ScanStruct(&e)
+	found, err = ds.FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(uint32(10), e.ID)
 
 	ds = sst.db.From("entry").Prepared(true).Where(depiq.C("id").Gte(1)).Order(depiq.C("id").Asc()).Offset(1).Limit(1)
-	found, err = ds.ScanStruct(&e)
+	found, err = ds.FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.Equal(uint32(2), e.ID)
@@ -322,7 +322,7 @@ func (sst *sqlserverTest) TestInsert() {
 	sst.NoError(err)
 
 	var insertedEntry entry
-	found, err := ds.Where(depiq.C("int").Eq(10)).ScanStruct(&insertedEntry)
+	found, err := ds.Where(depiq.C("int").Eq(10)).FecthRow(&insertedEntry)
 	sst.NoError(err)
 	sst.True(found)
 	sst.True(insertedEntry.ID > 0)
@@ -349,7 +349,7 @@ func (sst *sqlserverTest) TestInsert() {
 	sst.NoError(err)
 
 	var newEntries []entry
-	sst.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).ScanStructs(&newEntries))
+	sst.NoError(ds.Where(depiq.C("int").In([]uint32{11, 12, 13, 14})).Fetch(&newEntries))
 	sst.Len(newEntries, 4)
 	for i, e := range newEntries {
 		sst.Equal(entries[i]["Int"], e.Int)
@@ -384,7 +384,7 @@ func (sst *sqlserverTest) TestInsert() {
 	sst.NoError(err)
 
 	newEntries = newEntries[0:0]
-	sst.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).ScanStructs(&newEntries))
+	sst.NoError(ds.Where(depiq.C("int").In([]uint32{15, 16, 17, 18})).Fetch(&newEntries))
 	sst.Len(newEntries, 4)
 }
 
@@ -399,7 +399,7 @@ func (sst *sqlserverTest) TestInsertReturningProducesError() {
 func (sst *sqlserverTest) TestUpdate() {
 	ds := sst.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	e.Int = 11
@@ -426,7 +426,7 @@ func (sst *sqlserverTest) TestUpdateReturning() {
 func (sst *sqlserverTest) TestDelete() {
 	ds := sst.db.From("entry")
 	var e entry
-	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").ScanStruct(&e)
+	found, err := ds.Where(depiq.C("int").Eq(9)).Select("id").FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	_, err = ds.Where(depiq.C("id").Eq(e.ID)).Delete().Executor().Exec()
@@ -442,7 +442,7 @@ func (sst *sqlserverTest) TestDelete() {
 	sst.False(found)
 
 	e = entry{}
-	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").ScanStruct(&e)
+	found, err = ds.Where(depiq.C("int").Eq(8)).Select("id").FecthRow(&e)
 	sst.NoError(err)
 	sst.True(found)
 	sst.NotEqual(0, e.ID)

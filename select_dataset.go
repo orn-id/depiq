@@ -563,24 +563,24 @@ func (sd *SelectDataset) ReturnsColumns() bool {
 	return true
 }
 
-// Generates the SELECT sql for this dataset and uses Exec#ScanStructs to scan the results into a slice of structs.
+// Generates the SELECT sql for this dataset and uses Exec#Fetch to scan the results into a slice of structs.
 //
-// ScanStructs will only select the columns that can be scanned in to the struct unless you have explicitly selected
+// Fetch will only select the columns that can be scanned in to the struct unless you have explicitly selected
 // certain columns. See examples.
 //
 // i: A pointer to a slice of structs
-func (sd *SelectDataset) ScanStructs(i interface{}) error {
-	return sd.ScanStructsContext(context.Background(), i)
+func (sd *SelectDataset) Fetch(i interface{}) error {
+	return sd.FetchContext(context.Background(), i)
 }
 
-// Generates the SELECT sql for this dataset and uses Exec#ScanStructsContext to scan the results into a slice of
+// Generates the SELECT sql for this dataset and uses Exec#FetchContext to scan the results into a slice of
 // structs.
 //
-// ScanStructsContext will only select the columns that can be scanned in to the struct unless you have explicitly
+// FetchContext will only select the columns that can be scanned in to the struct unless you have explicitly
 // selected certain columns. See examples.
 //
 // i: A pointer to a slice of structs
-func (sd *SelectDataset) ScanStructsContext(ctx context.Context, i interface{}) error {
+func (sd *SelectDataset) FetchContext(ctx context.Context, i interface{}) error {
 	if sd.queryFactory == nil {
 		return ErrQueryFactoryNotFoundError
 	}
@@ -591,23 +591,23 @@ func (sd *SelectDataset) ScanStructsContext(ctx context.Context, i interface{}) 
 	return ds.Executor().ScanStructsContext(ctx, i)
 }
 
-// Generates the SELECT sql for this dataset and uses Exec#ScanStruct to scan the result into a slice of structs
+// Generates the SELECT sql for this dataset and uses Exec#FecthRow to scan the result into a slice of structs
 //
-// ScanStruct will only select the columns that can be scanned in to the struct unless you have explicitly selected
+// FecthRow will only select the columns that can be scanned in to the struct unless you have explicitly selected
 // certain columns. See examples.
 //
 // i: A pointer to a structs
-func (sd *SelectDataset) ScanStruct(i interface{}) (bool, error) {
-	return sd.ScanStructContext(context.Background(), i)
+func (sd *SelectDataset) FecthRow(i interface{}) (bool, error) {
+	return sd.FetchtRowContext(context.Background(), i)
 }
 
-// Generates the SELECT sql for this dataset and uses Exec#ScanStructContext to scan the result into a slice of structs
+// Generates the SELECT sql for this dataset and uses Exec#FetchtRowContext to scan the result into a slice of structs
 //
-// ScanStructContext will only select the columns that can be scanned in to the struct unless you have explicitly
+// FetchtRowContext will only select the columns that can be scanned in to the struct unless you have explicitly
 // selected certain columns. See examples.
 //
 // i: A pointer to a structs
-func (sd *SelectDataset) ScanStructContext(ctx context.Context, i interface{}) (bool, error) {
+func (sd *SelectDataset) FetchtRowContext(ctx context.Context, i interface{}) (bool, error) {
 	if sd.queryFactory == nil {
 		return false, ErrQueryFactoryNotFoundError
 	}

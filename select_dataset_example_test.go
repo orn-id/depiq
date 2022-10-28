@@ -1264,14 +1264,14 @@ func ExampleSelectDataset_ScanStructs() {
 	}
 	db := getDB()
 	var users []User
-	if err := db.From("depiq_user").ScanStructs(&users); err != nil {
+	if err := db.From("depiq_user").Fetch(&users); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	fmt.Printf("\n%+v", users)
 
 	users = users[0:0]
-	if err := db.From("depiq_user").Select("first_name").ScanStructs(&users); err != nil {
+	if err := db.From("depiq_user").Select("first_name").Fetch(&users); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
@@ -1296,7 +1296,7 @@ func ExampleSelectDataset_ScanStructs_prepared() {
 		})
 
 	var users []User
-	if err := ds.ScanStructs(&users); err != nil {
+	if err := ds.Fetch(&users); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
@@ -1329,7 +1329,7 @@ func ExampleSelectDataset_ScanStructs_withJoinAutoSelect() {
 		Join(depiq.T("user_role"), depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id"))))
 	var users []UserAndRole
 	// Scan structs will auto build the
-	if err := ds.ScanStructs(&users); err != nil {
+	if err := ds.Fetch(&users); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
@@ -1370,7 +1370,7 @@ func ExampleSelectDataset_ScanStructs_withJoinManualSelect() {
 		From("depiq_user").
 		Join(depiq.T("user_role"), depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id"))))
 	var users []User
-	if err := ds.ScanStructs(&users); err != nil {
+	if err := ds.Fetch(&users); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
@@ -1394,7 +1394,7 @@ func ExampleSelectDataset_ScanStruct() {
 	findUserByName := func(name string) {
 		var user User
 		ds := db.From("depiq_user").Where(depiq.C("first_name").Eq(name))
-		found, err := ds.ScanStruct(&user)
+		found, err := ds.FecthRow(&user)
 		switch {
 		case err != nil:
 			fmt.Println(err.Error())
@@ -1439,7 +1439,7 @@ func ExampleSelectDataset_ScanStruct_withJoinAutoSelect() {
 				depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id"))),
 			).
 			Where(depiq.C("first_name").Eq(name))
-		found, err := ds.ScanStruct(&userAndRole)
+		found, err := ds.FecthRow(&userAndRole)
 		switch {
 		case err != nil:
 			fmt.Println(err.Error())
@@ -1488,7 +1488,7 @@ func ExampleSelectDataset_ScanStruct_withJoinManualSelect() {
 				depiq.On(depiq.I("depiq_user.id").Eq(depiq.I("user_role.user_id"))),
 			).
 			Where(depiq.C("first_name").Eq(name))
-		found, err := ds.ScanStruct(&userAndRole)
+		found, err := ds.FecthRow(&userAndRole)
 		switch {
 		case err != nil:
 			fmt.Println(err.Error())
