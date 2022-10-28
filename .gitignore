@@ -1,0 +1,5 @@
+.idea
+src
+*.iml
+coverage.*
+.DS_*

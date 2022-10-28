@@ -1,0 +1,196 @@
+# Dialect
+
+Dialects allow depiq the build the correct SQL for each database. There are four dialects that come packaged with `depiq`
+
+* [mysql](./dialect/mysql/mysql.go) - `import _ "github.com/orn-id/depiq/v9/dialect/mysql"`
+* [postgres](./dialect/postgres/postgres.go) - `import _ "github.com/orn-id/depiq/v9/dialect/postgres"`
+* [sqlite3](./dialect/sqlite3/sqlite3.go) - `import _ "github.com/orn-id/depiq/v9/dialect/sqlite3"`
+* [sqlserver](./dialect/sqlserver/sqlserver.go) - `import _ "github.com/orn-id/depiq/v9/dialect/sqlserver"`
+
+**NOTE** Dialects work like drivers in go where they are not registered until you import the package.
+
+Below are examples for each dialect. Notice how the dialect is imported and then looked up using `depiq.Dialect`
+
+<a name="postgres"></a>
+### Postgres
+```go
+import (
+  "fmt"
+  "github.com/orn-id/depiq/v9"
+  // import the dialect
+  _ "github.com/orn-id/depiq/v9/dialect/postgres"
+)
+
+// look up the dialect
+dialect := depiq.Dialect("postgres")
+
+// use dialect.From to get a dataset to build your SQL
+ds := dialect.From("test").Where(depiq.Ex{"id": 10})
+sql, args, err := ds.ToSQL()
+if err != nil{
+  fmt.Println("An error occurred while generating the SQL", err.Error())
+}else{
+  fmt.Println(sql, args)
+}
+```
+
+Output:
+```
+SELECT * FROM "test" WHERE "id" = 10 []
+```
+
+<a name="mysql"></a>
+### MySQL
+```go
+import (
+  "fmt"
+  "github.com/orn-id/depiq/v9"
+  // import the dialect
+  _ "github.com/orn-id/depiq/v9/dialect/mysql"
+)
+
+// look up the dialect
+dialect := depiq.Dialect("mysql")
+
+// use dialect.From to get a dataset to build your SQL
+ds := dialect.From("test").Where(depiq.Ex{"id": 10})
+sql, args, err := ds.ToSQL()
+if err != nil{
+  fmt.Println("An error occurred while generating the SQL", err.Error())
+}else{
+  fmt.Println(sql, args)
+}
+```
+
+Output:
+```
+SELECT * FROM `test` WHERE `id` = 10 []
+```
+
+<a name="sqlite3"></a>
+### SQLite3
+```go
+import (
+  "fmt"
+  "github.com/orn-id/depiq/v9"
+  // import the dialect
+  _ "github.com/orn-id/depiq/v9/dialect/sqlite3"
+)
+
+// look up the dialect
+dialect := depiq.Dialect("sqlite3")
+
+// use dialect.From to get a dataset to build your SQL
+ds := dialect.From("test").Where(depiq.Ex{"id": 10})
+sql, args, err := ds.ToSQL()
+if err != nil{
+  fmt.Println("An error occurred while generating the SQL", err.Error())
+}else{
+  fmt.Println(sql, args)
+}
+```
+
+Output:
+```
+SELECT * FROM `test` WHERE `id` = 10 []
+```
+
+<a name="sqlserver"></a>
+### SQLServer
+```go
+import (
+  "fmt"
+  "github.com/orn-id/depiq/v9"
+  // import the dialect
+  _ "github.com/orn-id/depiq/v9/dialect/sqlserver"
+)
+
+// look up the dialect
+dialect := depiq.Dialect("sqlserver")
+
+// use dialect.From to get a dataset to build your SQL
+ds := dialect.From("test").Where(depiq.Ex{"id": 10})
+sql, args, err := ds.ToSQL()
+if err != nil{
+  fmt.Println("An error occurred while generating the SQL", err.Error())
+}else{
+  fmt.Println(sql, args)
+}
+```
+
+Output:
+```
+SELECT * FROM "test" WHERE "id" = 10 []
+```
+
+### Executing Queries 
+
+You can also create a `depiq.Database` instance to query records.
+
+In the example below notice that we imported the dialect and driver for side effect only.
+
+```go
+import (
+  "database/sql"
+  "github.com/orn-id/depiq/v9"
+  _ "github.com/orn-id/depiq/v9/dialect/postgres"
+  _ "github.com/lib/pq"
+)
+
+dialect := depiq.Dialect("postgres")
+
+pgDb, err := sql.Open("postgres", "user=postgres dbname=depiqpostgres sslmode=disable ")
+if err != nil {
+  panic(err.Error())
+}
+db := dialect.DB(pgDb)
+
+// "SELECT COUNT(*) FROM "user";
+if count, err := db.From("user").Count(); err != nil {
+  fmt.Println(err.Error())
+}else{
+  fmt.Printf("User count = %d", count)
+}
+```
+
+<a name="custom-dialects"></a>
+## Custom Dialects
+
+Dialects in depiq are the foundation of building the correct SQL for each DB dialect.
+
+### Dialect Options
+
+Most SQL dialects share a majority of their syntax, for this reason `depiq` has a [default set of dialect options]((http://godoc.org/github.com/orn-id/depiq/#DefaultDialectOptions)) that can be used as a base for any new Dialect.
+
+When creating a new `SQLDialect` you just need to override the default values that are documented in [`SQLDialectOptions`](http://godoc.org/github.com/orn-id/depiq/#SQLDialectOptions).
+
+Take a look at [`postgres`](./dialect/postgres/postgres.go), [`mysql`](./dialect/mysql/mysql.go) and [`sqlite3`](./dialect/sqlite3/sqlite3.go) for examples.
+
+### Creating a custom dialect
+
+When creating a new dialect you must register it using [`RegisterDialect`](http://godoc.org/github.com/orn-id/depiq/#RegisterDialect). This method requires 2 arguments.
+
+1. `dialect string` - The name of your dialect
+2. `opts SQLDialectOptions` - The custom options for your dialect
+
+For example you could create a custom dialect that replaced the default quote `'"'` with a backtick <code>`</code>
+```go
+opts := depiq.DefaultDialectOptions()
+opts.QuoteRune = '`'
+depiq.RegisterDialect("custom-dialect", opts)
+
+dialect := depiq.Dialect("custom-dialect")
+
+ds := dialect.From("test")
+
+sql, args, _ := ds.ToSQL()
+fmt.Println(sql, args)
+```
+
+Output:
+```
+SELECT * FROM `test` []
+```
+
+For more examples look at [`postgres`](./dialect/postgres/postgres.go), [`mysql`](./dialect/mysql/mysql.go) and [`sqlite3`](./dialect/sqlite3/sqlite3.go) for examples.
+
